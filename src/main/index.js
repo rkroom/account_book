@@ -1,9 +1,11 @@
 import { app, BrowserWindow, Menu } from 'electron' //引入相关模块
+import initializeDb from './utils/db'
 
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
+
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
@@ -35,6 +37,10 @@ const template = [{ //菜单栏模板
           { name: '数据库', extensions: ['bd'] },
           { name: 'All Files', extensions: ['*'] }
         ]
+      }).then(filename => {
+        // dialog.showSaveDialog是一个promise，关于promise可以查看https://www.liaoxuefeng.com/wiki/1022910821149312/1023024413276544
+        // 调用initializeDb方法新建数据库
+        initializeDb(filename.filePath, 1234567)
       })
     }
   }, {
