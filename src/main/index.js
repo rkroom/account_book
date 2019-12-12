@@ -1,5 +1,7 @@
-import { app, BrowserWindow, Menu } from 'electron' //引入相关模块
+import { app, BrowserWindow, Menu, ipcMain } from 'electron' //引入相关模块
 import initializeDb from './utils/db'
+import path from 'path'
+import fse from 'fs-extra'
 
 /**
  * Set `__static` path to static files in production
@@ -9,6 +11,46 @@ import initializeDb from './utils/db'
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
+
+// 配置文件路径，app.getPath：https://electronjs.org/docs/api/app
+// 路径为C:\Users\用户名\AppData\Roaming\Electron
+const configFile = path.join(app.getPath('userData'), 'config.json')
+// 配置文件默认值
+var config = {
+  'dbpath': path.join(app.getPath('userData'), 'default.sqlite3'),
+  'name': 'account book',
+  'version': '0.0.1',
+  'password': null
+}
+function changeConfig (filename) {
+  // 如果配置文件存在
+  if (fse.existsSync(configFile)) {
+    // 读取配置文件并且转换为JSON对象
+    config = JSON.parse(fse.readFileSync(configFile))
+    // 修改数据库文件路径
+    config.dbpath = filename
+    // 重新写入配置
+    fse.writeFileSync(configFile, JSON.stringify(config))
+  } else {
+    // 确保配置文件存在
+    fse.ensureFileSync(configFile)
+    // 修改数据库路径
+    config.dbpath = filename
+    // 重新写入配置文件
+    fse.writeFileSync(configFile, JSON.stringify(config))
+  }
+}
+
+// 监听newdb
+ipcMain.on('newdb', (event, message) => {
+  // 修改配置文件
+  changeConfig(message.dbfile)
+  // 初始化数据库
+  initializeDb(message.dbfile, message.password)
+  // 重启窗口
+  mainWindow.close()
+  createWindow()
+})
 
 const { dialog } = require('electron') //引入对话框
 const template = [{ //菜单栏模板
@@ -24,6 +66,11 @@ const template = [{ //菜单栏模板
           { name: '数据库', extensions: ['bd'] },
           { name: 'All Files', extensions: ['*'] }
         ]
+      }).then((filename) => {
+        // filePaths为一个数组
+        changeConfig(filename.filePaths[0])
+        // 重启窗口
+        mainWindow.reload()
       })
     }
   }, {
@@ -39,9 +86,15 @@ const template = [{ //菜单栏模板
         ]
       }).then(filename => {
         // dialog.showSaveDialog是一个promise，关于promise可以查看https://www.liaoxuefeng.com/wiki/1022910821149312/1023024413276544
-        // 调用initializeDb方法新建数据库
-        initializeDb(filename.filePath, 1234567)
+        // 向renderer发送newdb消息
+        mainWindow.webContents.send('newdb', filename.filePath)
       })
+    }
+  }, {
+    label: '修改密码',
+    click () {
+      // 向renderer发送changedb消息
+      mainWindow.webContents.send('changedb', null)
     }
   }, {
     label: '退出',
