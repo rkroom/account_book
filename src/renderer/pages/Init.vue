@@ -56,7 +56,6 @@ export default {
       // 检测密码是否符合规则
       this.$refs[passwordForm].validate((valid) => {
         if (valid) {
-          console.log("123")
           this.dialogFormVisible = false
           // 修改密码设置
           changePasswdConfig(this.passwordForm.saveStatus, this.passwordForm.password)

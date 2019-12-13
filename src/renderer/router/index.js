@@ -11,6 +11,21 @@ export default new Router({
       component: require('@/pages/Init').default
     },
     {
+      path: '/bookdetailed',
+      name: 'bookdetailed',
+      component: require('@/pages/Book').default
+    },
+    {
+      path: '/bookaccount',
+      name: 'bookaccount',
+      component: require('@/pages/Account').default
+    },
+    {
+      path: '/bookmanage',
+      name: 'bookmanage',
+      component: require('@/pages/Manage').default
+    },
+    {
       path: '*',
       redirect: '/'
     }
