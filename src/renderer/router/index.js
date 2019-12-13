@@ -26,6 +26,26 @@ export default new Router({
       component: require('@/pages/Manage').default
     },
     {
+      path: '/newdiary',
+      name: 'newdiary',
+      component: require('@/Pages/NewDiary').default
+    },
+    {
+      path: '/listdiary',
+      name: 'listdiary',
+      component: require('@/Pages/ListDiary').default
+    },
+    {
+      path: '/goal',
+      name: 'goal',
+      component: require('@/Pages/Goal').default
+    },
+    {
+      path: '/schedule',
+      name: 'schedule',
+      component: require('@/Pages/Schedule').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

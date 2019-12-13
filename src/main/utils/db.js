@@ -56,6 +56,38 @@ function initializeDb (filename, password) {
     db.run(`CREATE TRIGGER update_category_datetime_Trigger AFTER UPDATE On books_account_category_first BEGIN  UPDATE books_account_category_first SET updated = datetime('now','localtime') WHERE id = NEW.id; END`)
     db.run(`CREATE TRIGGER update_specific_datetime_Trigger AFTER UPDATE On books_account_category_specific BEGIN  UPDATE books_account_category_specific SET updated = datetime('now','localtime') WHERE id = NEW.id; END`)
     db.run(`CREATE TRIGGER update_account_datetime_Trigger AFTER UPDATE On books_account_info BEGIN  UPDATE books_account_info SET updated = datetime('now','localtime') WHERE id = NEW.id; END`)
+    db.run(`CREATE TABLE "diaries_diary_info" (
+      "id" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+      "diarydate" datetime NOT NULL DEFAULT (datetime('now','localtime')),
+      "weather" varchar(30) NOT NULL,
+      "title" varchar(30),
+      "content" TEXT NOT NULL,
+      "created" datetime NOT NULL DEFAULT (datetime('now','localtime')),
+      "updated" datetime NOT NULL DEFAULT (datetime('now','localtime')))`)
+    db.run(`CREATE TRIGGER update_diary_datetime_Trigger AFTER UPDATE On diaries_diary_info BEGIN  UPDATE diaries_diary_info SET updated = (datetime('now','localtime')) WHERE id = NEW.id; END;`)
+    db.run(`CREATE TABLE "schemes_project_info" (
+      "id" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+      "created" datetime NOT NULL DEFAULT (datetime('now','localtime')),
+      "type" varchar(30) NOT NULL,
+      "content" TEXT NOT NULL,
+      "finished" datetime,
+      "amount" decimal,
+      "finaldate" datetime,
+      "status" varchar(30) NOT NULL,
+      "round" varchar(30),
+      "datesign" integer,
+      "updated" datetime NOT NULL DEFAULT (datetime('now','localtime')),
+      "recordtime" datetime NOT NULL DEFAULT (datetime('now','localtime')))`)
+    db.run(`CREATE TRIGGER update_schemes_datetime_Trigger AFTER UPDATE On schemes_project_info BEGIN  UPDATE schemes_project_info SET updated = (datetime('now','localtime')) WHERE id = NEW.id; END;`)
+    db.run(`CREATE TABLE "schemes_handle_info" (
+      "id" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+      "project_id" integer NOT NULL,
+      "handledate" datetime NOT NULL DEFAULT (datetime('now','localtime')),
+      "comment" TEXT,
+      "recordtime" datetime NOT NULL DEFAULT (datetime('now','localtime')),
+      "updated" datetime NOT NULL DEFAULT (datetime('now','localtime')),
+      CONSTRAINT "fk_schemes_project_handle_info" FOREIGN KEY ("project_id") REFERENCES "schemes_project_info" ("id"))`)
+    db.run(`CREATE TRIGGER update_handle_datetime_Trigger AFTER UPDATE On schemes_handle_info BEGIN  UPDATE schemes_handle_info SET updated = (datetime('now','localtime')) WHERE id = NEW.id; END`)
     // 默认值
     db.run(`INSERT INTO "books_account_category_first"("id", "first_level", "flow_sign") VALUES (1, '食品酒水', 'consume')`)
     db.run(`INSERT INTO "books_account_category_first"("id", "first_level", "flow_sign") VALUES (2, '居家物业', 'consume')`)
