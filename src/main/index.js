@@ -17,7 +17,7 @@ if (process.env.NODE_ENV !== 'development') {
 const configFile = path.join(app.getPath('userData'), 'config.json')
 // 配置文件默认值
 var config = {
-  'dbpath': path.join(app.getPath('userData'), 'default.sqlite3'),
+  'dbpath': ":memory:",
   'name': 'account book',
   'version': '0.0.1',
   'password': null
@@ -37,6 +37,12 @@ function changeConfig (filename) {
     // 修改数据库路径
     config.dbpath = filename
     // 重新写入配置文件
+    fse.writeFileSync(configFile, JSON.stringify(config))
+  }
+}
+
+function checkConfig(){
+  if (!fse.existsSync(configFile)) {
     fse.writeFileSync(configFile, JSON.stringify(config))
   }
 }
@@ -136,6 +142,7 @@ const winURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`
 
 function createWindow () {
+  checkConfig()
   /**
    * Initial window options
    */
@@ -154,6 +161,8 @@ function createWindow () {
     mainWindow = null
   })
 }
+
+app.allowRendererProcessReuse =false
 
 app.on('ready', createWindow)
 

@@ -26,7 +26,7 @@ export default {
       db.run(`PRAGMA KEY = '` + value + `'`)
       db.run(`select * from sqlite_sequence`, (info) => {
         if (info) {
-          return callback(new Error('请输入正确的密码'))
+          return callback(new Error('请输入正确的密码，如果是第一次运行本软件，请先创建账本。'))
         } else {
           return callback()
         }
