@@ -5,8 +5,8 @@
     <el-tab-pane label="支出" name="pay">
       <el-form ref="detailform" :model="detailform" :inline="true" class="demo-form-inline" :rules="rules">
         <el-form-item label="分类" prop="category">
-          <el-cascader :show-all-levels="false" :props="defaultParams" :options="options" :clearable="true"
-            v-model="detailform.category" @change="handleChange">
+          <el-cascader :show-all-levels="false"  :options="options" :clearable="true" :props="defaultParams"
+            v-model="detailform.category" @change="handleChange" :expandTrigger = "'hover'">
           </el-cascader>
         </el-form-item>
         <el-form-item label="账户" prop="account">
@@ -36,7 +36,7 @@
       <el-form ref="incomeDetailForm" :model="incomeDetailForm" :inline="true" class="demo-form-inline" :rules="rules">
         <el-form-item label="分类" prop="category">
           <el-cascader :show-all-levels="false" :props="defaultParams" :options="incomeOptions" :clearable="true"
-            v-model="incomeDetailForm.category" @change="handleChange">
+            v-model="incomeDetailForm.category" @change="handleChange" :expandTrigger = "'hover'">
           </el-cascader>
         </el-form-item>
         <el-form-item label="账户" prop="account">
@@ -252,7 +252,7 @@ export default {
           this.detailform.detailed = ''
           this.detailform.comment = ''
         } else {
-          this.$message({ type: 'error', message: '提交失败' })
+          this.$notify({ type: 'error', message: '提交失败' })
         }
       })
     },
@@ -283,7 +283,7 @@ export default {
           this.incomeDetailForm.detailed = ''
           this.incomeDetailForm.comment = ''
         } else {
-          this.$message({ type: 'error', message: '提交失败' })
+          this.$notify({ type: 'error', message: '提交失败' })
         }
       })
     },
@@ -329,11 +329,11 @@ export default {
             })
           } else {
             // 提交失败
-            this.$message({ type: 'error', message: '提交失败' })
+            this.$notify({ type: 'error', message: '提交失败' })
           }
           this.transferDetailForm.detailed = ''
         } else {
-          this.$message({ type: 'error', message: '提交失败' })
+          this.$notify({ type: 'error', message: '提交失败' })
         }
       })
     },

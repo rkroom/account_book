@@ -121,7 +121,7 @@ export default {
           message: '删除成功!'
         })
       }).catch(() => {
-        this.$message({
+        this.$notify({
           type: 'info',
           message: '已取消删除'
         })
