@@ -9,5 +9,10 @@ let dbpath = JSON.parse(fse.readFileSync(configFile))['dbpath']
 //新建数据库对象
 let sqlite3 = sq3.verbose()
 let db = new sqlite3.Database(dbpath)
+// 开发模式下，自动输入密码
+if (process.env.NODE_ENV === 'development'){
+    let passwd = JSON.parse(fse.readFileSync(configFile))['password']
+    db.run(`PRAGMA KEY = '` + passwd + `'`)
+}
 
 export default db

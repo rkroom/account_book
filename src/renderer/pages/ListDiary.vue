@@ -28,7 +28,7 @@
     <el-pagination background layout="prev, pager, next" :total="totalPage" :page-size="13"
       @current-change="handlePage">
     </el-pagination>
-    <el-dialog title="编辑" :visible.sync="dialogVisible" width="65%" :before-close="handleClose">
+    <el-dialog title="编辑" :visible.sync="dialogVisible" width="65%" :before-close="handleClose" :close-on-click-modal="false"	v-dialogDrag>
       <DiaryEdit :diaryData="diaryData"></DiaryEdit>
       <span slot="footer" class="dialog-footer">
       </span>
@@ -39,6 +39,7 @@
 <script>
 import db from '@/utils/sqdb'
 import DiaryEdit from '@/Pages/NewDiary'
+import '@/components/v-dialogDrag'
 const pageSize = 13
 
 export default {
@@ -106,7 +107,7 @@ export default {
   margin-bottom: 0;
   width: 50%;
 }
-.el-dialog {
-  height: 600px;
+.el-dialog__wrapper > div{
+height: 600px;
 }
 </style>
