@@ -6,7 +6,7 @@
       <el-form ref="detailform" :model="detailform" :inline="true" class="demo-form-inline" :rules="rules">
         <el-form-item label="分类" prop="category">
           <el-cascader :show-all-levels="false"  :options="options" :clearable="true" :props="defaultParams"
-            v-model="detailform.category" @change="handleChange" :expandTrigger = "'hover'">
+            v-model="detailform.category" @change="handleChange" >
           </el-cascader>
         </el-form-item>
         <el-form-item label="账户" prop="account">
