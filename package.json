@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "@journeyapps/sqlcipher": "^4.1.0",
+    "echarts": "^4.7.0",
     "element-ui": "^2.9.0",
     "fs-extra": "^9.0.0",
     "npm-check-updates": "^4.1.1",
