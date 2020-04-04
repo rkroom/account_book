@@ -9,6 +9,7 @@
               <el-menu-item index="/bookdetailed">账本</el-menu-item>
               <el-menu-item index="/bookaccount">账户</el-menu-item>
               <el-menu-item index="/bookmanage">管理</el-menu-item>
+              <el-menu-item index="/bookanalysis">报表</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">

@@ -26,6 +26,11 @@ export default new Router({
       component: require('@/pages/Manage').default
     },
     {
+      path: '/bookanalysis',
+      name:'bookanalysis' ,
+      component:require('@/pages/Analysis').default     
+    },
+    {
       path: '/newdiary',
       name: 'newdiary',
       component: require('@/Pages/NewDiary').default
