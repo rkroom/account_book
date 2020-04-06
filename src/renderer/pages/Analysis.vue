@@ -4,6 +4,7 @@
       <div id="myChart" :style="{width: '600px', height: '500px'}" ref="pieCharts"></div>
     </el-col>
     <el-col>
+      <p>{{queryDate | strSub}}</p>
       <el-select v-model="selectedOption" placeholder="请选择" @change="changeOption">
         <el-option
           v-for="item in firstLevelOptions"
@@ -12,6 +13,7 @@
           :value="item.id"
         ></el-option>
       </el-select>
+      <DateTimePicker v-model="queryDate"></DateTimePicker>
     </el-col>
   </el-row>
 </template>
@@ -19,16 +21,16 @@
 <script>
 import echarts from "echarts";
 import db from "@/utils/sqdb";
+import { currentlyMonthDays } from "@/utils/common.js";
+import DateTimePicker from "@/components/DateTimePicker";
 
 export default {
   name: "book-analysis",
+  components: { DateTimePicker },
   data() {
     return {
       myChart: {},
       chartOption: {
-        title: {
-          text: ""
-        },
         xAxis: {
           data: []
         },
@@ -52,27 +54,23 @@ export default {
           }
         ]
       },
+      // X,Y轴数据
       tmp: [],
-      cmd: [],
+      // 时间
+      queryDate: [],
+      // 一级分类选项
       firstLevelOptions: [],
       selectedOption: 1
     };
   },
+  filters: {
+    strSub: function(value) {
+      return value.map(item => {
+        return item.substring(0, 10);
+      });
+    }
+  },
   methods: {
-    currentlyMonthDays() {
-      // 获取当前月份，由此计算本月收支
-      let date = new Date();
-      let year = date.getFullYear();
-      let month = date.getMonth() + 1;
-      if (month.toString().length === 1) {
-        month = "0" + month;
-      }
-      let d = new Date(year, month, 0);
-      return [
-        year + "-" + month + "-" + "01 00:00:00",
-        year + "-" + month + "-" + d.getDate() + " 23:59:59"
-      ];
-    },
     getFirstLevel() {
       db.all(
         `SELECT id,first_level FROM books_account_category_first where flow_sign = 'consume'`,
@@ -90,7 +88,7 @@ export default {
       let yAxis = [];
       db.each(
         `SELECT s.id,s.specific_category,sum(b.detailed) as sum FROM (SELECT id,specific_category FROM books_account_category_specific where parent_category_id = ?) as s LEFT JOIN books_account_book as b on s.id = b.types_id WHERE b.when_time > ? AND when_time < ? GROUP by s.id`,
-        [this.selectedOption, this.cmd[0], this.cmd[1]],
+        [this.selectedOption, this.queryDate[0], this.queryDate[1]],
         (err, row) => {
           if (err) {
             throw err;
@@ -106,17 +104,24 @@ export default {
       this.tmp = await this.getSpecific();
     }
   },
-  mounted: function() {
-    this.cmd = this.currentlyMonthDays();
-    this.myChart = echarts.init(document.getElementById("myChart"));
+  created:function(){
     this.getFirstLevel();
+  },
+  mounted: function() {
+    this.currentMotnthDate = currentlyMonthDays();
+    this.queryDate = currentlyMonthDays();
+    this.myChart = echarts.init(document.getElementById("myChart"));
     this.tmp = this.getSpecific();
+    this.myChart.setOption(this.chartOption);
   },
   watch: {
     tmp: function(newValue, oldValue) {
-      this.chartOption.xAxis.data = newValue[0];
-      this.chartOption.series[0].data = newValue[1];
-      this.myChart.setOption(this.chartOption);
+        this.chartOption.xAxis.data = newValue[0]
+        this.chartOption.series[0].data = newValue[1]
+        this.myChart.setOption(this.chartOption);
+    },
+    queryDate:function(newVlue,oldValue) {
+      this.tmp = this.getSpecific();
     }
   }
 };

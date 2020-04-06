@@ -5,13 +5,13 @@ import fse from 'fs-extra' // 读取配置文件
 const configFile = path.join(require('electron').remote.app.getPath('userData'), 'config.json')
 
 //获取密码
-function getPasswd () {
+function getPasswd() {
   let password = JSON.parse(fse.readFileSync(configFile))['password']
   return password
 }
 
 // 修改密码设置
-function changePasswdConfig (isSave, password) {
+function changePasswdConfig(isSave, password) {
   if (isSave === true) {
     // 如果需要记住密码，则将密码写入配置文件
     let config = JSON.parse(fse.readFileSync(configFile))
@@ -25,7 +25,7 @@ function changePasswdConfig (isSave, password) {
   }
 }
 
-function dateFtt (fmt, date) {
+function dateFtt(fmt, date) {
   var o = {
     'M+': date.getMonth() + 1,
     'd+': date.getDate(),
@@ -46,5 +46,38 @@ function dateFtt (fmt, date) {
   return fmt
 }
 
+function currentlyMonthDays() {
+  // 获取当前月份，由此计算本月收支
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = date.getMonth() + 1;
+  if (month.toString().length === 1) {
+    month = "0" + month;
+  }
+  let d = new Date(year, month, 0);
+  return [
+    year + "-" + month + "-" + "01 00:00:00",
+    year + "-" + month + "-" + d.getDate() + " 23:59:59"
+  ];
+}
 
-export { getPasswd, changePasswdConfig, dateFtt }
+function previousMonthDays() {
+  // 获取上月月份，由此计算上月收支
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = date.getMonth();
+  if (month === 0) {
+    year = year - 1;
+    month = 12;
+  }
+  if (month.toString().length === 1) {
+    month = "0" + month;
+  }
+  var d = new Date(year, month, 0);
+  return [
+    year + "-" + month + "-" + "01 00:00:00",
+    year + "-" + month + "-" + d.getDate() + " 23:59:59"
+  ];
+}
+
+export { getPasswd, changePasswdConfig, dateFtt, currentlyMonthDays, previousMonthDays }
