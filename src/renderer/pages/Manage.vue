@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row type="flex">
-      <el-col :span="6">
+      <el-col :span="7">
         总资产：{{ totalAssets | reservedecimal }}
         <br />
         总负债：{{ totalDebts | reservedecimal }}
@@ -22,7 +22,7 @@
       <el-col :span="16">
         <div id="myChart" :style="{width: '500px', height: '210px'}" ref="pieCharts"></div>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="3">
         <DateTimePicker v-model="queryDate"></DateTimePicker>
         <p>{{queryDate | strSub}}</p>
       </el-col>

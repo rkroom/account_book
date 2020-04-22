@@ -56,8 +56,14 @@ export default {
   },
   //父组件传递过来的账户ID
   props: {
-    accountId: '',
-    cellStyle: {}
+    accountId: {
+      type:[String,Number],
+      default:NaN
+    },
+    cellStyle: {
+      type:Object,
+      default:()=>({})
+    }
   },
   methods: {
     // 接收从记账组件传递过来的数据
