@@ -73,7 +73,7 @@ export default {
   methods: {
     getFirstLevel() {
       db.all(
-        `SELECT id,first_level FROM books_account_category_first where flow_sign = 'consume'`,
+        `SELECT id,first_level FROM books_account_category_first`,
         [],
         (err, row) => {
           if (err) {

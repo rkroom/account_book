@@ -5,7 +5,7 @@
       <el-table-column type="expand">
         <template>
           <!--显示该账户下的账单-->
-          <BookTable :accountId='accountId' :cellStyle="cellStyle"></BookTable>
+          <BookTable :account='accountId' :cellStyle="cellStyle"></BookTable>
         </template>
       </el-table-column>
       <el-table-column prop="name" label="账户">

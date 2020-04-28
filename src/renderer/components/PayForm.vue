@@ -10,7 +10,7 @@
           </el-cascader>
         </el-form-item>
         <el-form-item label="账户" prop="account">
-          <el-select v-model="detailform.account" placeholder="请选择" default-first-option>
+          <el-select v-model="detailform.account" placeholder="请选择">
             <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
@@ -40,7 +40,7 @@
           </el-cascader>
         </el-form-item>
         <el-form-item label="账户" prop="account">
-          <el-select v-model="incomeDetailForm.account" placeholder="请选择" default-first-option>
+          <el-select v-model="incomeDetailForm.account" placeholder="请选择">
             <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
@@ -66,13 +66,13 @@
       <el-form ref="transferDetailForm" :model="transferDetailForm" :inline="true" class="demo-form-inline"
         :rules="rules">
         <el-form-item label="转出账户" prop="account">
-          <el-select v-model="transferDetailForm.account" placeholder="请选择" default-first-option>
+          <el-select v-model="transferDetailForm.account" placeholder="请选择">
             <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="目标账户" prop="account">
-          <el-select v-model="transferDetailForm.aimAccount" placeholder="请选择" default-first-option>
+          <el-select v-model="transferDetailForm.aimAccount" placeholder="请选择">
             <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>

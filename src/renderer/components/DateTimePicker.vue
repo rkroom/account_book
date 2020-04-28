@@ -1,8 +1,7 @@
 <template>
-  <div>
-    <div style="display:none">
+    <el-popover ref="dateTimeVisible" @show="selectTime" placement="right" width="400" trigger="click">
       <el-date-picker
-        v-model="queryDate"
+        v-model="queryDateLocal"
         type="datetimerange"
         align="right"
         unlink-panels
@@ -13,11 +12,12 @@
         value-format="yyyy-MM-dd HH:mm:ss"
         :default-time="defaultTime"
         @change="dateTime"
+        @blur="closePop"	
         ref="datePicker"
       ></el-date-picker>
-    </div>
-    <el-button @click="selectTime">选择时间</el-button>
-  </div>
+      <i v-if="icon" class="el-icon-arrow-down" slot="reference"></i>
+      <el-button v-if="button" slot="reference">选择时间</el-button>
+    </el-popover>
 </template>
 
 <script>
@@ -29,7 +29,7 @@ const cmd = currentlyMonthDays();
 export default {
   name: "DateTimePicker",
   model: {
-    prop: "queryDate",
+    prop: "queryDateLocal",
     event: "sendDate"
   },
   props: {
@@ -38,10 +38,16 @@ export default {
       default: function() {
         return [];
       }
+    },
+    icon:{
+      type:Boolean,
+      default:false
     }
   },
   data() {
     return {
+      queryDateLocal:this.queryDate,
+      button:true,
       defaultTime: ["00:00:00", "23:59:59"],
       pickerOptions: {
         shortcuts: [
@@ -87,8 +93,20 @@ export default {
     selectTime() {
       this.$refs.datePicker.pickerVisible = true;
     },
-    dateTime() {
-      this.$emit("sendDate", this.queryDate);
+    dateTime(value) {
+      if(value){
+      this.$emit("sendDate", this.queryDateLocal);
+      }else{
+        this.$emit("sendDate", ["0000-00-00", "now"]);
+      }
+    },
+    closePop(){
+      this.$refs.dateTimeVisible.doClose()
+    }
+  },
+  created:function(){
+    if(this.icon){
+      this.button = false
     }
   }
 };
