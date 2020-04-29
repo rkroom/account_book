@@ -166,7 +166,8 @@ export default {
           }
         ]
       },
-      tmp: []
+      tmp: [],
+      firstLevelIdAndName: this.getFirstLevelIdAndName()
     };
   },
   filters: {
@@ -181,6 +182,18 @@ export default {
     }
   },
   methods: {
+    // 返回一级分类名字和ID组成的对象
+    getFirstLevelIdAndName() {
+      let tmp = {};
+      db.each(
+        `SELECT id,first_level FROM books_account_category_first`,
+        [],
+        (err, row) => {
+          tmp[row.first_level] = row.id;
+        }
+      );
+      return tmp;
+    },
     // 获取一级分类消费信息
     getFirstLevelConsumeAnalysis: function() {
       let tmp = [];
@@ -332,7 +345,17 @@ export default {
     this.getPreviousMonthStatistics("income");
     this.getPreviousMonthStatistics("consume");
     // 基于准备好的dom，初始化echarts实例
+    let that = this;
     this.myChart = echarts.init(document.getElementById("myChart"));
+    this.myChart.on("click", function(params) {
+      that.$router.push({
+        path: "/bookanalysis",
+        query: { 
+          firstLevel: that.firstLevelIdAndName[params.name],
+          date:that.queryDate
+          }
+      });
+    });
     this.queryDate = await currentlyMonthDays();
     this.getFirstLevelConsumeAnalysis();
     this.myChart.setOption(this.chartOption);

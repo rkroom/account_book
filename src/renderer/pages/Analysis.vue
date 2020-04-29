@@ -1,5 +1,10 @@
 <template>
   <el-row type="flex">
+    <div ref="divbookPopover">
+      <el-popover v-model="popoverVisible" @after-enter="show" trigger="click" ref="bookPopover">
+        <BookTable :category="bookTableCategory" :time="queryDate" :cellStyle="cellStyle"></BookTable>
+      </el-popover>
+    </div>
     <el-col>
       <div id="myChart" :style="{width: '600px', height: '500px'}" ref="pieCharts"></div>
     </el-col>
@@ -23,10 +28,11 @@ import echarts from "echarts";
 import db from "@/utils/sqdb";
 import { currentlyMonthDays } from "@/utils/common.js";
 import DateTimePicker from "@/components/DateTimePicker";
+import BookTable from "@/components/BookTable";
 
 export default {
   name: "book-analysis",
-  components: { DateTimePicker },
+  components: { DateTimePicker, BookTable },
   data() {
     return {
       myChart: {},
@@ -57,10 +63,18 @@ export default {
       // X,Y轴数据
       tmp: [],
       // 时间
-      queryDate: [],
+      queryDate: this.$route.query.date
+        ? this.$route.query.date
+        : currentlyMonthDays(),
       // 一级分类选项
       firstLevelOptions: [],
-      selectedOption: 1
+      selectedOption: this.$route.query.firstLevel
+        ? this.$route.query.firstLevel
+        : 1,
+      SpecificIdandName: this.getSpecificIdandName(),
+      bookTableCategory: "",
+      popoverVisible: false,
+      cellStyle:{ padding: 0, background: '#F0FFFF' },
     };
   },
   filters: {
@@ -71,6 +85,22 @@ export default {
     }
   },
   methods: {
+    // 当弹出窗显示完毕后添加监听鼠标点击事件
+    show: function() {
+      document.addEventListener("click", this.hidePanel, false);
+    },
+    // 当关闭弹出窗后移除监听鼠标点击事件
+    hide: function() {
+      document.removeEventListener("click", this.hidePanel, false);
+    },
+    hidePanel: function(e) {
+      // 如果鼠标点击在弹出窗区域外则关闭弹出窗
+      if (!this.$refs.divbookPopover.contains(e.target)) {
+        this.popoverVisible = false;
+        this.hide();
+      }
+    },
+    // 获取一级分类
     getFirstLevel() {
       db.all(
         `SELECT id,first_level FROM books_account_category_first`,
@@ -83,6 +113,7 @@ export default {
         }
       );
     },
+    // 获取二级分类数据
     getSpecific() {
       let xAxis = [];
       let yAxis = [];
@@ -99,28 +130,44 @@ export default {
       );
       return [xAxis, yAxis];
     },
+    getSpecificIdandName: function() {
+      let tmp = {};
+      db.each(
+        `SELECT id,specific_category FROM books_account_category_specific`,
+        [],
+        (err, row) => {
+          tmp[row.specific_category] = row.id;
+        }
+      );
+      return tmp;
+    },
+    // 数据修改
     changeOption: async function(value) {
       this.selectedOption = value;
       this.tmp = await this.getSpecific();
     }
   },
-  created:function(){
+  created: function() {
     this.getFirstLevel();
   },
   mounted: function() {
     this.currentMotnthDate = currentlyMonthDays();
-    this.queryDate = currentlyMonthDays();
     this.myChart = echarts.init(document.getElementById("myChart"));
+    let that = this;
+    this.myChart.on("click", function(params) {
+      that.bookTableCategory = that.SpecificIdandName[params.name];
+      that.popoverVisible = true;
+    });
     this.tmp = this.getSpecific();
     this.myChart.setOption(this.chartOption);
   },
   watch: {
     tmp: function(newValue, oldValue) {
-        this.chartOption.xAxis.data = newValue[0]
-        this.chartOption.series[0].data = newValue[1]
-        this.myChart.setOption(this.chartOption);
+      this.chartOption.xAxis.data = newValue[0];
+      this.chartOption.series[0].data = newValue[1];
+      this.myChart.setOption(this.chartOption);
     },
-    queryDate:function(newVlue,oldValue) {
+    queryDate: function(newVlue, oldValue) {
       this.tmp = this.getSpecific();
     }
   }

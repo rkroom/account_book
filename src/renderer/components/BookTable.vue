@@ -107,7 +107,7 @@ export default {
       accountType: {},
       categoryName: {},
       pageSize: 13,
-      selectedTime:this.time,
+      selectedTime: this.time,
       categoriesOptions: this.getselect(),
       categoryNull: "null or",
       categoryId: this.category,
@@ -120,8 +120,8 @@ export default {
       selectFlow: this.flow,
       flowParam: this.flow,
       accountOptions: this.getAccountOptions(),
-      selectAccount:this.account,
-      accountParam:this.account,
+      selectAccount: this.account,
+      accountParam: this.account
     };
   },
   //父组件传递过来的账户ID
@@ -147,7 +147,7 @@ export default {
     flow: {
       type: String,
       default: "%"
-    },
+    }
   },
   methods: {
     // 接收从记账组件传递过来的数据
@@ -377,7 +377,7 @@ export default {
       this.gettabledata(this.pageSize, 0);
       this.$refs.flowPopover.doClose();
     },
-    cleanAccount:function(){
+    cleanAccount: function() {
       this.selectAccount = "%";
       this.accountParam = "%";
       this.$refs.accountCascader.handleClear();
@@ -385,7 +385,7 @@ export default {
       this.gettabledata(this.pageSize, 0);
       this.$refs.accountPopover.doClose();
     },
-    handleAccountChange:function(){
+    handleAccountChange: function() {
       this.accountParam = this.selectAccount[0];
       this.gettotalpage();
       this.gettabledata(this.pageSize, 0);
@@ -480,11 +480,24 @@ export default {
   watch: {
     // 当父组件传递过来的账户ID发生改变
     account: function() {
-      this.accountParam = this.account
+      this.accountParam = this.account;
       this.gettabledata(this.pageSize, 0);
       this.gettotalpage();
     },
     selectedTime: function() {
+      this.gettotalpage();
+      this.gettabledata(this.pageSize, 0);
+    },
+    time: function() {
+      this.selectedTime = this.time;
+      this.gettotalpage();
+      this.gettabledata(this.pageSize, 0);
+    },
+    category: function() {
+      this.categoryNull = "not null and";
+      let tmp = []
+      tmp.push(this.category)
+      this.categoryParam = tmp;
       this.gettotalpage();
       this.gettabledata(this.pageSize, 0);
     }
