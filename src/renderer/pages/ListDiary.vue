@@ -94,7 +94,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .demo-table-expand {
   font-size: 0;
 }
@@ -107,7 +107,7 @@ export default {
   margin-bottom: 0;
   width: 50%;
 }
-.el-dialog__wrapper > div{
+.el-dialog {
 height: 600px;
 }
 </style>

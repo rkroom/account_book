@@ -88,7 +88,7 @@
       @current-change="handlePage">
     </el-pagination>
 
-    <el-dialog title="循环记录" :modal="false" :visible.sync="dialogRound" width="15%" :before-close="handleClose">
+    <el-dialog title="循环记录" :modal="false" :visible.sync="dialogRound" width="20%" :before-close="handleClose">
       <el-input v-model="handleComment" placeholder="请输入备注"></el-input>
       <p>时间</p>
       <el-date-picker v-model="finshedDate" type="datetime" placeholder="请选择日期" value-format="yyyy-MM-dd HH:mm:ss"
@@ -99,7 +99,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="状态" :modal="false" :visible.sync="dialogVisible" width="15%" :before-close="handleClose">
+    <el-dialog title="状态" :modal="false" :visible.sync="dialogVisible" width="20%" :before-close="handleClose">
       <el-select v-model="rowStatus" placeholder="请选择" @change="handleStatusChange" style="width:135px">
         <el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
@@ -471,7 +471,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-dialog {
   height: 300px;
 }
