@@ -1,22 +1,24 @@
 # account_book
 
-> An electron vue account book project
-
-#### Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:9080
-npm run dev
-
-# build electron application for production
-npm run build
-
-
+## Project setup
+```
+yarn install
 ```
 
----
+### Compiles and hot-reloads for development
+```
+yarn serve
+```
 
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[45a3e22](https://github.com/SimulatedGREG/electron-vue/tree/45a3e224e7bb8fc71909021ccfdcfec0f461f634) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+### Compiles and minifies for production
+```
+yarn build
+```
+
+### Lints and fixes files
+```
+yarn lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
