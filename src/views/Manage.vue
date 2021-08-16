@@ -202,7 +202,7 @@ export default {
     // 获取一级分类消费信息
     getFirstLevelConsumeAnalysis: async function () {
       this.tmp = await db.asyncAll(
-        `SELECT sum(b.detailed) as value,f.first_level as name FROM books_account_book as b left JOIN 
+        `SELECT round(sum(b.detailed),2) as value,f.first_level as name FROM books_account_book as b left JOIN 
       books_account_category_specific as s on b.types_id = s.id LEFT JOIN books_account_category_first as f on s.parent_category_id = f.id 
       WHERE flow="consume" AND when_time >= ? AND when_time <= ? GROUP BY parent_category_id`,
         [this.queryDate[0], this.queryDate[1]]
@@ -241,10 +241,10 @@ export default {
             [this.firstCategoryForm.firstLevel, this.firstCategoryForm.flow]
           );
           this.getselectoptions();
-          this.$message(this.firstCategoryForm.firstLevel + " 添加成功！");
+          this.$notify(this.firstCategoryForm.firstLevel + " 添加成功！");
           this.firstCategoryForm.firstLevel = "";
         } else {
-          this.$message({ type: "error", message: "提交失败" });
+          this.$notify({ type: "error", message: "提交失败" });
         }
       });
     },
@@ -259,12 +259,12 @@ export default {
               this.specificCategoryForm.specificLevel,
             ]
           );
-          this.$message(
+          this.$notify(
             this.specificCategoryForm.specificLevel + " 添加成功！"
           );
           this.specificCategoryForm.specificLevel = "";
         } else {
-          this.$message({ type: "error", message: "提交失败" });
+          this.$notify({ type: "error", message: "提交失败" });
         }
       });
     },
@@ -287,7 +287,7 @@ export default {
       // 获取本月数据
       let cmd = currentlyMonthDays();
       db.get(
-        `SELECT sum(detailed) as amount FROM books_account_book WHERE flow = ? AND when_time > ? AND when_time < ?`,
+        `SELECT round(sum(detailed),2) as amount FROM books_account_book WHERE flow = ? AND when_time > ? AND when_time < ?`,
         [flow, cmd[0], cmd[1]],
         (err, row) => {
           if (err) {
@@ -305,7 +305,7 @@ export default {
       // 获取上月数据
       let cmd = previousMonthDays();
       db.get(
-        `SELECT sum(detailed) as amount FROM books_account_book WHERE flow = ? AND when_time > ? AND when_time < ?`,
+        `SELECT round(sum(detailed),2) as amount FROM books_account_book WHERE flow = ? AND when_time > ? AND when_time < ?`,
         [flow, cmd[0], cmd[1]],
         (err, row) => {
           if (err) {
@@ -353,18 +353,18 @@ export default {
   watch: {
     // 如果账户金额发生改变，则重新计算
     totalAssets: function (newValue, oldValue) {
-      this.netAssets = this.totalAssets - this.totalDebts;
+      this.netAssets = (this.totalAssets - this.totalDebts).toFixed(2)
     },
     totalDebts: function (newValue, oldValue) {
-      this.netAssets = this.totalAssets - this.totalDebts;
+      this.netAssets = (this.totalAssets - this.totalDebts).toFixed(2)
     },
     currentlyMonthConsume: function (newValue, oldValue) {
       this.currentlyMonthSummed =
-        this.currentlyMonthIncome - this.currentlyMonthConsume;
+        (this.currentlyMonthIncome - this.currentlyMonthConsume).toFixed(2)
     },
     currentlyMonthIncome: function (newValue, oldValue) {
       this.currentlyMonthSummed =
-        this.currentlyMonthIncome - this.currentlyMonthConsume;
+        (this.currentlyMonthIncome - this.currentlyMonthConsume).toFixed(2)
     },
     queryDate: async function (newValue, oldValue) {
       await this.getFirstLevelConsumeAnalysis();

@@ -52,36 +52,36 @@ export default {
       pickerOptions: [
         {
           text: "最近一周",
-          onClick(picker) {
+          value: () => { 
             const end = new Date();
             const start = new Date();
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit("pick", [start, end]);
+            return [start, end];
           },
         },
         {
           text: "最近30天",
-          onClick(picker) {
+          value: () => { 
             const end = new Date();
             const start = new Date();
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-            picker.$emit("pick", [start, end]);
+           return [start, end];
           },
         },
         {
           text: "上一月份",
-          onClick(picker) {
+          value: () => {
             const end = pmd[1];
             const start = pmd[0];
-            picker.$emit("pick", [start, end]);
+            return [start, end];
           },
         },
         {
           text: "本月",
-          onClick(picker) {
+          value: () => {
             const end = cmd[1];
             const start = cmd[0];
-            picker.$emit("pick", [start, end]);
+            return [start, end];
           },
         },
       ],

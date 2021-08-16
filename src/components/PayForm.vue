@@ -37,7 +37,7 @@
             v-model="detailform.when"
             type="datetime"
             placeholder="选择日期时间"
-            format="hh:mm:ss"
+            format="HH:mm:ss"
             value-format="YYYY-MM-DD HH:mm:ss"
           >
           </el-date-picker>
@@ -97,7 +97,7 @@
             v-model="incomeDetailForm.when"
             type="datetime"
             placeholder="选择日期时间"
-            format="hh:mm:ss"
+            format="HH:mm:ss"
             value-format="YYYY-MM-DD HH:mm:ss"
           >
           </el-date-picker>
@@ -160,7 +160,7 @@
             v-model="transferDetailForm.when"
             type="datetime"
             placeholder="选择日期时间"
-            format="hh:mm:ss"
+            format="HH:mm:ss"
             value-format="YYYY-MM-DD HH:mm:ss"
           >
           </el-date-picker>
