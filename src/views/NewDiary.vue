@@ -5,7 +5,7 @@
         <el-date-picker
           v-model="diary.datetime"
           type="datetime"
-          value-format="yyyy-MM-dd HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss"
           placeholder="选择日期"
           style="width: 135px"
           :picker-options="pickerOptions"

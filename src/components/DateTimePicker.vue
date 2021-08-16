@@ -21,12 +21,13 @@
       @change="dateTime"
       @blur="closePop"
       ref="datePicker"
+      value-format="YYYY-MM-DD HH:mm:ss"
     ></el-date-picker>
   </el-popover>
 </template>
 
 <script>
-import { currentlyMonthDays, previousMonthDays, dateFtt } from "@/utils/common";
+import { currentlyMonthDays, previousMonthDays } from "@/utils/common";
 const pmd = previousMonthDays();
 const cmd = currentlyMonthDays();
 export default {
@@ -92,10 +93,7 @@ export default {
     },
     dateTime(value) {
       if (value) {
-        this.$emit("update:modelValue", [
-          dateFtt("yyyy-MM-dd hh:mm:ss", value[0]),
-          dateFtt("yyyy-MM-dd hh:mm:ss", value[1]),
-        ]);
+        this.$emit("update:modelValue", value);
       } else {
         this.$emit("update:modelValue", ["0000-00-00", "now"]);
       }

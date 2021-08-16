@@ -37,6 +37,8 @@
             v-model="detailform.when"
             type="datetime"
             placeholder="选择日期时间"
+            format="hh:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
           >
           </el-date-picker>
         </el-form-item>
@@ -95,6 +97,8 @@
             v-model="incomeDetailForm.when"
             type="datetime"
             placeholder="选择日期时间"
+            format="hh:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
           >
           </el-date-picker>
         </el-form-item>
@@ -156,6 +160,8 @@
             v-model="transferDetailForm.when"
             type="datetime"
             placeholder="选择日期时间"
+            format="hh:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
           >
           </el-date-picker>
         </el-form-item>
@@ -183,7 +189,6 @@
 
 <script>
 import db from "@/utils/sqdb";
-import { dateFtt } from "@/utils/common";
 
 export default {
   name: "PayForm",
@@ -275,10 +280,6 @@ export default {
     submitForm(detailform) {
       this.$refs[detailform].validate((valid) => {
         if (valid) {
-          this.detailform.when = dateFtt(
-            "yyyy-MM-dd hh:mm:ss",
-            new Date(this.detailform.when)
-          );
           // 如果账户为资产账户
           if (this.accountType[this.detailform.account] === "asset") {
             db.serialize(() => {
@@ -334,10 +335,6 @@ export default {
     submitIncomeForm(incomeDetailForm) {
       this.$refs[incomeDetailForm].validate((valid) => {
         if (valid) {
-          this.incomeDetailForm.when = dateFtt(
-            "yyyy-MM-dd hh:mm:ss",
-            new Date(this.incomeDetailForm.when)
-          );
           // 如果账户为资产账户
           if (this.accountType[this.incomeDetailForm.account] === "asset") {
             db.serialize(() => {
@@ -393,10 +390,6 @@ export default {
     submitTransferForm(transferDetailForm) {
       this.$refs[transferDetailForm].validate((valid) => {
         if (valid) {
-          this.transferDetailForm.when = dateFtt(
-            "yyyy-MM-dd hh:mm:ss",
-            new Date(this.transferDetailForm.when)
-          );
           // 如果转出账户类型和转入账户类型相同
           if (
             this.accountType[this.transferDetailForm.account] ===
@@ -560,17 +553,9 @@ export default {
 </script>
 
 <style scoped>
-.el-input >>> .el-input__inner {
-  width: 150px;
+div >>> .el-input__inner {
   height: 30px;
-}
-.el-cascader >>> .el-input__inner {
   width: 150px;
-  height: 30px;
-}
-.el-select >>> .el-input__inner {
-  width: 150px;
-  height: 30px;
 }
 .el-form-item >>> .el-form-item__content {
   width: 150px;

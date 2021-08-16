@@ -6,7 +6,7 @@
           <el-date-picker
             v-model="goal.createdate"
             type="datetime"
-            value-format="yyyy-MM-dd HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
             placeholder="选择日期"
             style="width: 135px"
           >
@@ -18,7 +18,7 @@
           <el-date-picker
             v-model="goal.goaldate"
             type="datetime"
-            value-format="yyyy-MM-dd HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
             placeholder="选择日期"
             style="width: 135px"
           >
@@ -118,7 +118,7 @@
         v-model="finshedDate"
         type="datetime"
         placeholder="请选择日期"
-        value-format="yyyy-MM-dd HH:mm:ss"
+        value-format="YYYY-MM-DD HH:mm:ss"
         style="width: 135px"
       >
       </el-date-picker>
