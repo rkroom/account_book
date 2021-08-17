@@ -90,7 +90,7 @@ export default {
       selectedOption: this.$route.query.firstLevel
         ? this.$route.query.firstLevel
         : 1,
-      SpecificIdandName: this.getSpecificIdandName(),
+      SpecificIdandName: [],
       bookTableCategory: "",
       popoverVisible: false,
       cellStyle: { padding: 0, background: "#F0FFFF" },
@@ -154,6 +154,9 @@ export default {
     },
   },
   created: function () {
+    this.getSpecificIdandName().then(value=>{
+      this.SpecificIdandName = value
+    })
     this.getFirstLevel();
   },
   mounted: function () {
