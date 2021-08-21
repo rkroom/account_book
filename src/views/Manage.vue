@@ -259,9 +259,7 @@ export default {
               this.specificCategoryForm.specificLevel,
             ]
           );
-          this.$notify(
-            this.specificCategoryForm.specificLevel + " 添加成功！"
-          );
+          this.$notify(this.specificCategoryForm.specificLevel + " 添加成功！");
           this.specificCategoryForm.specificLevel = "";
         } else {
           this.$notify({ type: "error", message: "提交失败" });
@@ -353,18 +351,20 @@ export default {
   watch: {
     // 如果账户金额发生改变，则重新计算
     totalAssets: function (newValue, oldValue) {
-      this.netAssets = (this.totalAssets - this.totalDebts).toFixed(2)
+      this.netAssets = (this.totalAssets - this.totalDebts).toFixed(2);
     },
     totalDebts: function (newValue, oldValue) {
-      this.netAssets = (this.totalAssets - this.totalDebts).toFixed(2)
+      this.netAssets = (this.totalAssets - this.totalDebts).toFixed(2);
     },
     currentlyMonthConsume: function (newValue, oldValue) {
-      this.currentlyMonthSummed =
-        (this.currentlyMonthIncome - this.currentlyMonthConsume).toFixed(2)
+      this.currentlyMonthSummed = (
+        this.currentlyMonthIncome - this.currentlyMonthConsume
+      ).toFixed(2);
     },
     currentlyMonthIncome: function (newValue, oldValue) {
-      this.currentlyMonthSummed =
-        (this.currentlyMonthIncome - this.currentlyMonthConsume).toFixed(2)
+      this.currentlyMonthSummed = (
+        this.currentlyMonthIncome - this.currentlyMonthConsume
+      ).toFixed(2);
     },
     queryDate: async function (newValue, oldValue) {
       await this.getFirstLevelConsumeAnalysis();

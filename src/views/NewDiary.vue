@@ -1,36 +1,38 @@
 <template>
   <el-form ref="newDiary" :model="diary" :rules="rules">
-    <el-col :span="5">
-      <el-form-item label="日期" prop="datetime">
-        <el-date-picker
-          v-model="diary.datetime"
-          type="datetime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          placeholder="选择日期"
-          style="width: 135px"
-          :picker-options="pickerOptions"
-        >
-        </el-date-picker>
-      </el-form-item>
-    </el-col>
-    <el-col :span="5">
-      <el-form-item label="天气" prop="weather">
-        <el-input
-          v-model="diary.weather"
-          placeholder="请输入天气"
-          style="width: 135px"
-        ></el-input>
-      </el-form-item>
-    </el-col>
-    <el-col :span="5">
-      <el-form-item label="标题" prop="title">
-        <el-input
-          v-model="diary.title"
-          placeholder="请输入标题"
-          style="width: 135px"
-        ></el-input>
-      </el-form-item>
-    </el-col>
+    <el-row>
+      <el-col :span="5">
+        <el-form-item label="日期" prop="datetime">
+          <el-date-picker
+            v-model="diary.datetime"
+            type="datetime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            placeholder="选择日期"
+            style="width: 135px"
+            :picker-options="pickerOptions"
+          >
+          </el-date-picker>
+        </el-form-item>
+      </el-col>
+      <el-col :span="5">
+        <el-form-item label="天气" prop="weather">
+          <el-input
+            v-model="diary.weather"
+            placeholder="请输入天气"
+            style="width: 135px"
+          ></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="5">
+        <el-form-item label="标题" prop="title">
+          <el-input
+            v-model="diary.title"
+            placeholder="请输入标题"
+            style="width: 135px"
+          ></el-input>
+        </el-form-item>
+      </el-col>
+    </el-row>
     <el-col :span="16">
       <el-form-item prop="content">
         <el-input

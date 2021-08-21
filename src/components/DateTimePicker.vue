@@ -52,7 +52,7 @@ export default {
       pickerOptions: [
         {
           text: "最近一周",
-          value: () => { 
+          value: () => {
             const end = new Date();
             const start = new Date();
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
@@ -61,11 +61,11 @@ export default {
         },
         {
           text: "最近30天",
-          value: () => { 
+          value: () => {
             const end = new Date();
             const start = new Date();
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-           return [start, end];
+            return [start, end];
           },
         },
         {

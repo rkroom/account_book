@@ -317,7 +317,7 @@ export default {
             db.run(`COMMIT`);
           });
           this.tableData.splice(index, 1);
-          this.$message({
+          this.$notify({
             type: "success",
             message: "删除成功!",
           });

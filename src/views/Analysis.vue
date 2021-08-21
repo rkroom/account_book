@@ -154,9 +154,9 @@ export default {
     },
   },
   created: function () {
-    this.getSpecificIdandName().then(value=>{
-      this.SpecificIdandName = value
-    })
+    this.getSpecificIdandName().then((value) => {
+      this.SpecificIdandName = value;
+    });
     this.getFirstLevel();
   },
   mounted: function () {
