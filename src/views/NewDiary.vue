@@ -33,6 +33,7 @@
         </el-form-item>
       </el-col>
     </el-row>
+    <el-row>
     <el-col :span="16">
       <el-form-item prop="content">
         <el-input
@@ -47,6 +48,7 @@
         <el-button type="primary" @click="onSave('newDiary')">保存</el-button>
       </el-form-item>
     </el-col>
+    </el-row>
   </el-form>
 </template>
 

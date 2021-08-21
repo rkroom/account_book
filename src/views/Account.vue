@@ -158,13 +158,13 @@ export default {
             row.id,
           ]);
           row.amount = value;
-          this.$message({
+          this.$notify({
             type: "success",
             message: "现在 " + row.name + " 金额为: " + value,
           });
         })
         .catch(() => {
-          this.$message({
+          this.$notify({
             type: "info",
             message: "取消输入",
           });
@@ -182,13 +182,13 @@ export default {
           ]);
           let oldNmae = row.name;
           row.name = value;
-          this.$message({
+          this.$notify({
             type: "success",
             message: oldNmae + " 已修改为: " + value,
           });
         })
         .catch(() => {
-          this.$message({
+          this.$notify({
             type: "info",
             message: "取消输入",
           });
@@ -227,7 +227,7 @@ export default {
           this.accountTableData.push(newAccount);
           this.accountForm.name = "";
         } else {
-          this.$message({ type: "error", message: "提交失败" });
+          this.$notify({ type: "error", message: "提交失败" });
         }
       });
     },

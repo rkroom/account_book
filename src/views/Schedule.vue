@@ -140,7 +140,7 @@
     <el-dialog
       title="循环记录"
       :modal="false"
-      v-model:visible="dialogRound"
+      v-model="dialogRound"
       width="20%"
       :before-close="handleClose"
     >
@@ -164,7 +164,7 @@
     <el-dialog
       title="状态"
       :modal="false"
-      v-model:visible="dialogVisible"
+      v-model="dialogVisible"
       width="20%"
       :before-close="handleClose"
     >
