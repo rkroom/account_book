@@ -16,11 +16,14 @@ protocol.registerSchemesAsPrivileged([
 
 // 配置文件路径，app.getPath：https://electronjs.org/docs/api/app
 // 路径为C:\Users\用户名\AppData\Roaming\Electron
-const configFile:string = path.join(app.getPath("userData"), process.env.NODE_ENV === "development"?"devConfig.json":"config.json");
+const configFile: string = path.join(
+  app.getPath("userData"),
+  process.env.NODE_ENV === "development" ? "devConfig.json" : "config.json"
+);
 
 (<any>global).shareObject = {
-  configFile:configFile
-}
+  configFile: configFile,
+};
 
 // 配置文件默认值
 let config = {

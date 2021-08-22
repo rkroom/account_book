@@ -34,20 +34,20 @@
       </el-col>
     </el-row>
     <el-row>
-    <el-col :span="16">
-      <el-form-item prop="content">
-        <el-input
-          type="textarea"
-          :autosize="{ minRows: 15, maxRows: 25 }"
-          placeholder="请输入内容"
-          v-model="diary.content"
-        >
-        </el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSave('newDiary')">保存</el-button>
-      </el-form-item>
-    </el-col>
+      <el-col :span="16">
+        <el-form-item prop="content">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 15, maxRows: 25 }"
+            placeholder="请输入内容"
+            v-model="diary.content"
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSave('newDiary')">保存</el-button>
+        </el-form-item>
+      </el-col>
     </el-row>
   </el-form>
 </template>

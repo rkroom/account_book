@@ -2,7 +2,7 @@ import fse from "fs-extra"; // 读取配置文件
 import electron from "electron";
 
 //配置文件路径
-const configFile = electron.remote.getGlobal('shareObject').configFile
+const configFile = electron.remote.getGlobal("shareObject").configFile;
 
 //文件编码
 const charEncoding = "utf-8";
