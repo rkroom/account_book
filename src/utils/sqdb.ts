@@ -1,13 +1,9 @@
 import sq3 from "@journeyapps/sqlcipher"; //引入sqlcipher
-import path from "path";
 import fse from "fs-extra";
 import electron from "electron";
 
 //配置文件
-const configFile = path.join(
-  electron.remote.app.getPath("userData"),
-  "config.json"
-);
+const configFile = electron.remote.getGlobal('shareObject').configFile
 //数据库路径
 const dbpath = JSON.parse(fse.readFileSync(configFile, "utf-8"))["dbpath"];
 //新建数据库对象

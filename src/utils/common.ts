@@ -1,12 +1,8 @@
-import path from "path"; // 引入path拼接路径
 import fse from "fs-extra"; // 读取配置文件
 import electron from "electron";
 
 //配置文件路径
-const configFile = path.join(
-  electron.remote.app.getPath("userData"),
-  "config.json"
-);
+const configFile = electron.remote.getGlobal('shareObject').configFile
 
 //文件编码
 const charEncoding = "utf-8";

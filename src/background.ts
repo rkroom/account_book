@@ -16,7 +16,12 @@ protocol.registerSchemesAsPrivileged([
 
 // 配置文件路径，app.getPath：https://electronjs.org/docs/api/app
 // 路径为C:\Users\用户名\AppData\Roaming\Electron
-const configFile = path.join(app.getPath("userData"), "config.json");
+const configFile:string = path.join(app.getPath("userData"), process.env.NODE_ENV === "development"?"devConfig.json":"config.json");
+
+(<any>global).shareObject = {
+  configFile:configFile
+}
+
 // 配置文件默认值
 let config = {
   dbpath: ":memory:",
@@ -39,12 +44,6 @@ function changeConfig(filename: string) {
     // 修改数据库路径
     config.dbpath = filename;
     // 重新写入配置文件
-    fse.writeFileSync(configFile, JSON.stringify(config));
-  }
-}
-
-function checkConfig() {
-  if (!fse.existsSync(configFile)) {
     fse.writeFileSync(configFile, JSON.stringify(config));
   }
 }
