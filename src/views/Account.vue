@@ -1,13 +1,7 @@
 <template>
   <div>
-    <el-table
-      :data="accountTableData"
-      style="width: 100%"
-      @row-click="handleRowClick"
-      ref="accountTable"
-      :row-key="getRowKeys"
-      :expand-row-keys="expands"
-    >
+    <el-table :data="accountTableData" style="width: 100%" @row-click="handleRowClick" ref="accountTable"
+      :row-key="getRowKeys" :expand-row-keys="expands">
       <el-table-column type="expand">
         <template #default>
           <!--显示该账户下的账单-->
@@ -18,72 +12,30 @@
       <!--修改账户名-->
       <el-table-column label="账户名称">
         <template v-slot="scope">
-          <el-button
-            size="mini"
-            type="text"
-            @click.stop="handleEditAccountName(scope.$index, scope.row)"
-            >修改名称
+          <el-button  link @click.stop="handleEditAccountName(scope.$index, scope.row)">修改名称
           </el-button>
         </template>
       </el-table-column>
       <el-table-column prop="type" label="类型"> </el-table-column>
-      <el-table-column prop="amount" label="金额"> </el-table-column>
-      <!--修改账户金额-->
-      <el-table-column label="编辑金额">
-        <template v-slot="scope">
-          <el-button
-            size="mini"
-            type="text"
-            @click.stop="handleEdit(scope.$index, scope.row)"
-            >编辑金额</el-button
-          >
-        </template>
-      </el-table-column>
+      <el-table-column prop="balance" label="金额"> </el-table-column>
     </el-table>
-    <el-pagination
-      :hide-on-single-page="true"
-      background
-      layout="prev, pager, next"
-      :total="totalPage"
-      :page-size="15"
-      @current-change="handlePage"
-    >
+    <el-pagination :hide-on-single-page="true" background layout="prev, pager, next" :total="totalPage" :page-size="15"
+      @current-change="handlePage">
     </el-pagination>
     <br />
     <!--添加账户-->
-    <el-form
-      ref="accountForm"
-      :model="accountForm"
-      :inline="true"
-      class="demo-form-inline"
-      :rules="rules"
-    >
+    <el-form ref="accountForm" :model="accountForm" :inline="true" class="demo-form-inline" :rules="rules">
       <el-form-item label="账户名称" prop="name">
-        <el-input
-          v-model="accountForm.name"
-          placeholder="请输入账户名称"
-        ></el-input>
+        <el-input v-model="accountForm.name" placeholder="请输入账户名称"></el-input>
       </el-form-item>
       <el-form-item label="账户类型" prop="type">
-        <el-select
-          v-model="accountForm.type"
-          placeholder="请选择"
-          default-first-option
-        >
-          <el-option
-            v-for="item in selectoptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
+        <el-select v-model="accountForm.type" placeholder="请选择" default-first-option>
+          <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="账户金额" prop="amount">
-        <el-input
-          v-model.trim="accountForm.amount"
-          placeholder="请输入金额"
-        ></el-input>
+      <el-form-item label="初始金额" prop="amount">
+        <el-input v-model.trim="accountForm.amount" placeholder="请输入金额"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="submitForm('accountForm')">提交</el-button>
@@ -92,8 +44,8 @@
   </div>
 </template>
 <script>
-import db from "@/utils/sqdb";
-import BookTable from "@/components/BookTable";
+import BookTable from "../components/BookTable.vue";
+import { UpdateAccountName,addAccount,getAccountCount,getAccountInfo_a } from "../tools/dbTools"
 const pageSize = 15; //分页
 
 export default {
@@ -144,6 +96,7 @@ export default {
     handlePage(value) {
       this.getAccountInfo(pageSize, (value - 1) * pageSize);
     },
+    /*** 
     handleEdit(index, row) {
       this.$prompt("请输入 " + row.name + " 的金额", "提示", {
         confirmButtonText: "确定",
@@ -153,10 +106,7 @@ export default {
         inputErrorMessage: "金额为数字，不能以小数点结尾",
       })
         .then(({ value }) => {
-          db.run(`UPDATE books_account_info set amount = ? where id = ?`, [
-            value,
-            row.id,
-          ]);
+          UpdateAmount(value, row.id)
           row.amount = value;
           this.$notify({
             type: "success",
@@ -170,16 +120,14 @@ export default {
           });
         });
     },
+    ***/
     handleEditAccountName(index, row) {
       this.$prompt("请输入 " + row.name + " 的新账户名称", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
       })
         .then(({ value }) => {
-          db.run(`UPDATE books_account_info set name = ? where id = ?`, [
-            value,
-            row.id,
-          ]);
+          UpdateAccountName(value, row.id);
           let oldNmae = row.name;
           row.name = value;
           this.$notify({
@@ -212,42 +160,27 @@ export default {
       this.$refs[accountForm].validate((valid) => {
         let accountTypeList = { asset: "资产", debt: "负债" };
         if (valid) {
-          db.run(
-            `INSERT INTO books_account_info(name,amount,type) values (?,?,?)`,
-            [
-              this.accountForm.name,
-              this.accountForm.amount,
-              this.accountForm.type,
-            ]
-          );
-          let newAccount = { name: "default", type: "asset", amount: "0" };
+          addAccount(this.accountForm.name, this.accountForm.amount, this.accountForm.type);
+          let newAccount = { name: "default", type: "asset", balance: "0" };
           newAccount["name"] = this.accountForm.name;
           newAccount["type"] = accountTypeList[this.accountForm.type];
-          newAccount["amount"] = this.accountForm.amount;
+          newAccount["balance"] = this.accountForm.amount;
+          if (this.accountForm.type == "debt"){
+            newAccount["balance"] = -newAccount["balance"];
+          }
           this.accountTableData.push(newAccount);
           this.accountForm.name = "";
+          this.accountForm.amount = 0;
         } else {
           this.$notify({ type: "error", message: "提交失败" });
         }
       });
     },
     gettotalpage() {
-      db.get(
-        `SELECT COUNT(id) as count from books_account_info`,
-        [],
-        (err, row) => {
-          if (err) {
-            throw err;
-          }
-          this.totalPage = row.count;
-        }
-      );
+      getAccountCount().then(row => { this.totalPage = row.count })
     },
-    async getAccountInfo(pageSize, page) {
-      this.accountTableData = await db.asyncAll(
-        `select id,name,case when type = 'asset' then '资产' when type = 'debt' then '负债' end as type,round(amount,2) as amount from books_account_info limit ? offset ?`,
-        [pageSize, page]
-      );
+    getAccountInfo(pageSize, page) {
+      getAccountInfo_a(pageSize,page).then(r=>{this.accountTableData = r})
     },
   },
   created: function () {
