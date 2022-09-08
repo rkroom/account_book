@@ -1,43 +1,25 @@
 <template>
   <!--如果没有记住密码，或者记住的密码错误则需要重新输入密码-->
-  <el-dialog
-    title="密码"
-    v-model="dialogFormVisible"
-    :close-on-click-modal="false"
-    width="30%"
-    :before-close="beforeclose"
-    :validate-on-rule-change="false"
-  >
-    <el-form
-      ref="passwordForm"
-      :model="passwordForm"
-      :rules="rules"
-      @submit.prevent
-    >
+  <el-dialog title="密码" v-model="dialogFormVisible" :close-on-click-modal="false" width="30%"
+    :before-close="beforeclose">
+    <el-form ref="passwordForm" :model="passwordForm" :rules="rules" @submit.prevent>
       <el-form-item label="密码：" prop="password">
-        <el-input
-          v-model="passwordForm.password"
-          style="width: 150px"
-          show-password
-        ></el-input>
+        <el-input v-model="passwordForm.password" style="width: 150px" show-password></el-input>
         <el-checkbox v-model="passwordForm.saveStatus">记住密码</el-checkbox>
       </el-form-item>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="cancelPassword">取 消</el-button>
-        <el-button type="primary" @click="confirmPassword('passwordForm')"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="confirmPassword('passwordForm')">确 定</el-button>
       </div>
     </template>
   </el-dialog>
 </template>
 
 <script>
-import db from "@/utils/sqdb"; //初始化数据库
-import { getPasswd, changePasswdConfig } from "@/utils/common"; //获取密码和修改密码
-import electron from "electron";
+let db = window.electronAPI.db
+
 export default {
   name: "init-page",
   data() {
@@ -66,7 +48,7 @@ export default {
         password: [{ validator: checkdetailed, trigger: "blur" }],
       },
       beforeclose: function (done) {
-        electron.remote.app.quit(); //通过remote模块关闭应用
+        window.electronAPI.quitApp(); //通过IPC通知主进程关闭应用
       },
       passwd: "",
     };
@@ -74,7 +56,7 @@ export default {
   methods: {
     cancelPassword() {
       // 取消输入则关闭应用
-      electron.remote.app.quit();
+      window.electronAPI.quitApp();
     },
     confirmPassword(passwordForm) {
       // 检测密码是否符合规则
@@ -82,9 +64,11 @@ export default {
         if (valid) {
           this.dialogFormVisible = false;
           // 修改密码设置
-          changePasswdConfig(
-            this.passwordForm.saveStatus,
-            this.passwordForm.password
+          window.electronAPI.changePasswdConfig(
+            {
+              isSave: this.passwordForm.saveStatus,
+              password: this.passwordForm.password
+            }
           );
           // 密码符合规则则转入bookdetailed页面
           this.$router.push("/bookdetailed");
@@ -94,23 +78,27 @@ export default {
   },
   created: function () {
     //vue声明周期
-    this.passwd = getPasswd(); //获取密码
-    if (this.passwd !== null) {
-      //如果密码非空，则检验密码
-      db.run(`PRAGMA KEY = '` + this.passwd + `'`);
-      db.run(`select * from sqlite_sequence`, (info) => {
-        if (info) {
-          // 密码错误则弹出密码输入界面
-          this.dialogFormVisible = true;
-        } else {
-          // 密码正确则转入/bookdetailed
-          this.$router.push("/bookdetailed");
-        }
-      });
-    } else {
-      //如果密码为空则弹出密码输入对话框
-      this.dialogFormVisible = true;
-    }
+    //获取密码
+    window.electronAPI.getPasswd().then(r => {
+      this.passwd = r
+      if (this.passwd !== null) {
+        //如果密码非空，则检验密码
+        db.run(`PRAGMA KEY = '` + this.passwd + `'`);
+        db.run(`select * from sqlite_sequence`, (info) => {
+          if (info) {
+            // 密码错误则弹出密码输入界面
+            this.dialogFormVisible = true;
+          } else {
+            // 密码正确则转入/bookdetailed
+            this.$router.push("/bookdetailed");
+          }
+        });
+      } else {
+        //如果密码为空则弹出密码输入对话框
+        this.dialogFormVisible = true;
+      }
+    });
+
   },
 };
-</script>
+</script>   

@@ -4,47 +4,48 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "init",
-    component: () => import("@/views/Init.vue"),
+    component: () => import("../views/Init.vue"),
   },
   {
     path: "/bookdetailed",
     name: "bookdetailed",
-    component: () => import("@/views/Book.vue"),
+    component: () => import("../views/Book.vue"),
   },
+      
   {
     path: "/bookaccount",
     name: "bookaccount",
-    component: () => import("@/views/Account.vue"),
+    component: () => import("../views/Account.vue"),
   },
   {
     path: "/bookmanage",
     name: "bookmanage",
-    component: () => import("@/views/Manage.vue"),
+    component: () => import("../views/Manage.vue"),
   },
   {
     path: "/bookanalysis",
     name: "bookanalysis",
-    component: () => import("@/views/Analysis.vue"),
+    component: () => import("../views/Analysis.vue"),
   },
   {
     path: "/newdiary",
     name: "newdiary",
-    component: () => import("@/views/NewDiary.vue"),
+    component: () => import("../views/NewDiary.vue"),
   },
   {
     path: "/listdiary",
     name: "listdiary",
-    component: () => import("@/views/ListDiary.vue"),
+    component: () => import("../views/ListDiary.vue"),
   },
   {
     path: "/goal",
     name: "goal",
-    component: () => import("@/views/Goal.vue"),
+    component: () => import("../views/Goal.vue"),
   },
   {
     path: "/schedule",
     name: "schedule",
-    component: () => import("@/views/Schedule.vue"),
+    component: () => import("../views/Schedule.vue"),
   },
 ];
 

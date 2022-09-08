@@ -2,57 +2,28 @@
   <el-tabs v-model="activeName">
     <!--支出-->
     <el-tab-pane label="支出" name="pay">
-      <el-form
-        ref="detailform"
-        :model="detailform"
-        :inline="true"
-        class="demo-form-inline"
-        :rules="rules"
-      >
+      <el-form ref="detailform" :model="detailform" :inline="true" class="demo-form-inline" :rules="rules">
         <el-form-item label="分类" prop="category">
-          <el-cascader
-            :show-all-levels="false"
-            :options="options"
-            :clearable="true"
-            :props="defaultParams"
-            v-model="detailform.category"
-            @change="handleChange"
-            placeholder="请选择"
-          >
+          <el-cascader :show-all-levels="false" :options="options" :clearable="true" :props="defaultParams"
+            v-model="detailform.category" @change="handleChange" placeholder="请选择">
           </el-cascader>
         </el-form-item>
         <el-form-item label="账户" prop="account">
           <el-select v-model="detailform.account" placeholder="请选择">
-            <el-option
-              v-for="item in selectoptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
+            <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="时间" prop="when">
-          <el-date-picker
-            v-model="detailform.when"
-            type="datetime"
-            placeholder="选择日期时间"
-            format="HH:mm:ss"
-            value-format="YYYY-MM-DD HH:mm:ss"
-          >
+          <el-date-picker v-model="detailform.when" type="datetime" placeholder="选择日期时间" format="HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="金额" prop="detailed">
-          <el-input
-            v-model.trim="detailform.detailed"
-            placeholder="请输入金额"
-          ></el-input>
+          <el-input v-model.trim="detailform.detailed" placeholder="请输入金额"></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="comment">
-          <el-input
-            v-model="detailform.comment"
-            placeholder="请输入备注"
-          ></el-input>
+          <el-input v-model="detailform.comment" placeholder="请输入备注"></el-input>
         </el-form-item>
         <el-form-item style="width: 70px">
           <el-button @click="submitForm('detailform')">提交</el-button>
@@ -61,134 +32,72 @@
     </el-tab-pane>
     <!--收入-->
     <el-tab-pane label="收入" name="income">
-      <el-form
-        ref="incomeDetailForm"
-        :model="incomeDetailForm"
-        :inline="true"
-        class="demo-form-inline"
-        :rules="rules"
-      >
+      <el-form ref="incomeDetailForm" :model="incomeDetailForm" :inline="true" class="demo-form-inline" :rules="rules">
         <el-form-item label="分类" prop="category">
-          <el-cascader
-            :show-all-levels="false"
-            :props="defaultParams"
-            :options="incomeOptions"
-            :clearable="true"
-            v-model="incomeDetailForm.category"
-            @change="handleChange"
-            :expandTrigger="'hover'"
-            placeholder="请选择"
-          >
+          <el-cascader :show-all-levels="false" :props="defaultParams" :options="incomeOptions" :clearable="true"
+            v-model="incomeDetailForm.category" @change="handleChange" :expandTrigger="'hover'" placeholder="请选择">
           </el-cascader>
         </el-form-item>
         <el-form-item label="账户" prop="account">
           <el-select v-model="incomeDetailForm.account" placeholder="请选择">
-            <el-option
-              v-for="item in selectoptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
+            <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="时间" prop="when">
-          <el-date-picker
-            v-model="incomeDetailForm.when"
-            type="datetime"
-            placeholder="选择日期时间"
-            format="HH:mm:ss"
-            value-format="YYYY-MM-DD HH:mm:ss"
-          >
+          <el-date-picker v-model="incomeDetailForm.when" type="datetime" placeholder="选择日期时间" format="HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="金额" prop="detailed">
-          <el-input
-            v-model.trim="incomeDetailForm.detailed"
-            placeholder="请输入金额"
-          ></el-input>
+          <el-input v-model.trim="incomeDetailForm.detailed" placeholder="请输入金额"></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="comment">
-          <el-input
-            v-model="incomeDetailForm.comment"
-            placeholder="请输入备注"
-          ></el-input>
+          <el-input v-model="incomeDetailForm.comment" placeholder="请输入备注"></el-input>
         </el-form-item>
         <el-form-item style="width: 70px">
-          <el-button @click="submitIncomeForm('incomeDetailForm')"
-            >提交</el-button
-          >
+          <el-button @click="submitIncomeForm('incomeDetailForm')">提交</el-button>
         </el-form-item>
       </el-form>
     </el-tab-pane>
     <!--转账-->
     <el-tab-pane label="转账" name="transfer">
-      <el-form
-        ref="transferDetailForm"
-        :model="transferDetailForm"
-        :inline="true"
-        class="demo-form-inline"
-        :rules="rules"
-      >
+      <el-form ref="transferDetailForm" :model="transferDetailForm" :inline="true" class="demo-form-inline"
+        :rules="rules">
         <el-form-item label="转出账户" prop="account">
           <el-select v-model="transferDetailForm.account" placeholder="请选择">
-            <el-option
-              v-for="item in selectoptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
+            <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="目标账户" prop="account">
-          <el-select
-            v-model="transferDetailForm.aimAccount"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in selectoptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
+          <el-select v-model="transferDetailForm.aimAccount" placeholder="请选择">
+            <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="时间" prop="when">
-          <el-date-picker
-            v-model="transferDetailForm.when"
-            type="datetime"
-            placeholder="选择日期时间"
-            format="HH:mm:ss"
-            value-format="YYYY-MM-DD HH:mm:ss"
-          >
+          <el-date-picker v-model="transferDetailForm.when" type="datetime" placeholder="选择日期时间" format="HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="金额" prop="detailed">
-          <el-input
-            v-model.trim="transferDetailForm.detailed"
-            placeholder="请输入金额"
-          ></el-input>
+          <el-input v-model.trim="transferDetailForm.detailed" placeholder="请输入金额"></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="comment">
-          <el-input
-            v-model="transferDetailForm.comment"
-            placeholder="请输入备注"
-          ></el-input>
+          <el-input v-model="transferDetailForm.comment" placeholder="请输入备注"></el-input>
         </el-form-item>
         <el-form-item style="width: 60px">
-          <el-button @click="submitTransferForm('transferDetailForm')"
-            >提交</el-button
-          >
+          <el-button @click="submitTransferForm('transferDetailForm')">提交</el-button>
         </el-form-item>
       </el-form>
     </el-tab-pane>
   </el-tabs>
 </template>
 
+
 <script>
-import db from "@/utils/sqdb";
+import { getCategory, getselectoptions_s, getAccountType_s, getselects, addBill, addTransfer, getLastBill } from '../tools/dbTools';
 
 export default {
   name: "PayForm",
@@ -204,16 +113,9 @@ export default {
         children: "children",
         lazy: true,
         lazyLoad(node, resolve) {
-          db.all(
-            `select id,specific_category as name,'leaf'leaf from books_account_category_specific where parent_category_id = ?`,
-            [node.data.id],
-            (err, rows) => {
-              if (err) {
-                throw err;
-              }
-              resolve(rows);
-            }
-          );
+          getCategory(node.data.id).then(r => {
+            resolve(r)
+          })
         },
       },
       detailform: {
@@ -266,64 +168,20 @@ export default {
     },
     // 将添加的数据传递到账单显示组件
     sendRowdata() {
-      db.get(
-        `SELECT * from books_account_book order by id desc limit 1`,
-        [],
-        (err, row) => {
-          if (err) {
-            throw err;
-          }
-          this.$bus.emit("appendTable", row);
-        }
-      );
+
+      getLastBill().then(r=>{this.$bus.emit("appendTable",r )});
+
     },
     submitForm(detailform) {
       this.$refs[detailform].validate((valid) => {
         if (valid) {
-          // 如果账户为资产账户
-          if (this.accountType[this.detailform.account] === "asset") {
-            db.serialize(() => {
-              db.run(`BEGIN TRANSACTION`);
-              db.run(
-                `INSERT INTO books_account_book(types_id,flow,detailed,account_info_id,comment,when_time) values (?,?,?,?,?,?)`,
-                [
-                  this.detailform.category[1],
-                  "consume",
-                  this.detailform.detailed,
-                  this.detailform.account,
-                  this.detailform.comment,
-                  this.detailform.when,
-                ]
-              );
-              db.run(
-                `UPDATE books_account_info set amount = amount - ? where id = ?`,
-                [this.detailform.detailed, this.detailform.account]
-              );
-              db.run(`COMMIT`);
-              this.sendRowdata();
-            });
-          } else {
-            db.serialize(() => {
-              db.run(`BEGIN TRANSACTION`);
-              db.run(
-                `INSERT INTO books_account_book(types_id,flow,detailed,account_info_id,comment,when_time) values (?,?,?,?,?,?)`,
-                [
-                  this.detailform.category[1],
-                  "consume",
-                  this.detailform.detailed,
-                  this.detailform.account,
-                  this.detailform.comment,
-                  this.detailform.when,
-                ]
-              );
-              db.run(
-                `UPDATE books_account_info set amount = amount + ? where id = ?`,
-                [this.detailform.detailed, this.detailform.account]
-              );
-              db.run(`COMMIT`);
-              this.sendRowdata();
-            });
-          }
+          addBill(this.detailform.category[1],
+            "consume",
+            this.detailform.detailed,
+            this.detailform.account,
+            this.detailform.comment,
+            this.detailform.when)
+          this.sendRowdata()
           this.detailform.detailed = "";
           this.detailform.comment = "";
         } else {
@@ -335,50 +193,14 @@ export default {
     submitIncomeForm(incomeDetailForm) {
       this.$refs[incomeDetailForm].validate((valid) => {
         if (valid) {
-          // 如果账户为资产账户
-          if (this.accountType[this.incomeDetailForm.account] === "asset") {
-            db.serialize(() => {
-              db.run(`BEGIN TRANSACTION`);
-              db.run(
-                `INSERT INTO books_account_book(types_id,flow,detailed,account_info_id,comment,when_time) values (?,?,?,?,?,?)`,
-                [
-                  this.incomeDetailForm.category[1],
-                  "income",
-                  this.incomeDetailForm.detailed,
-                  this.incomeDetailForm.account,
-                  this.incomeDetailForm.comment,
-                  this.incomeDetailForm.when,
-                ]
-              );
-              db.run(
-                `UPDATE books_account_info set amount = amount + ? where id = ?`,
-                [this.incomeDetailForm.detailed, this.incomeDetailForm.account]
-              );
-              db.run(`COMMIT`);
-              this.sendRowdata();
-            });
-          } else {
-            db.serialize(() => {
-              db.run(`BEGIN TRANSACTION`);
-              db.run(
-                `INSERT INTO books_account_book(types_id,flow,detailed,account_info_id,comment,when_time) values (?,?,?,?,?,?)`,
-                [
-                  this.incomeDetailForm.category[1],
-                  "income",
-                  this.incomeDetailForm.detailed,
-                  this.incomeDetailForm.account,
-                  this.incomeDetailForm.comment,
-                  this.incomeDetailForm.when,
-                ]
-              );
-              db.run(
-                `UPDATE books_account_info set amount = amount - ? where id = ?`,
-                [this.incomeDetailForm.detailed, this.incomeDetailForm.account]
-              );
-              db.run(`COMMIT`);
-              this.sendRowdata();
-            });
-          }
+          addBill(
+            this.incomeDetailForm.category[1],
+            "income",
+            this.incomeDetailForm.detailed,
+            this.incomeDetailForm.account,
+            this.incomeDetailForm.comment,
+            this.incomeDetailForm.when)
+          this.sendRowdata()
           this.incomeDetailForm.detailed = "";
           this.incomeDetailForm.comment = "";
         } else {
@@ -390,113 +212,14 @@ export default {
     submitTransferForm(transferDetailForm) {
       this.$refs[transferDetailForm].validate((valid) => {
         if (valid) {
-          // 如果转出账户类型和转入账户类型相同
-          if (
-            this.accountType[this.transferDetailForm.account] ===
-            this.accountType[this.transferDetailForm.aimAccount]
-          ) {
-            db.serialize(() => {
-              db.run(`BEGIN TRANSACTION`);
-              db.run(
-                `INSERT INTO books_account_book(flow,detailed,account_info_id,aim_account_id,comment,when_time) values (?,?,?,?,?,?)`,
-                [
-                  "transfer",
-                  this.transferDetailForm.detailed,
-                  this.transferDetailForm.account,
-                  this.transferDetailForm.aimAccount,
-                  this.transferDetailForm.comment,
-                  this.transferDetailForm.when,
-                ]
-              );
-              db.run(
-                `UPDATE books_account_info set amount = amount - ? where id = ?`,
-                [
-                  this.transferDetailForm.detailed,
-                  this.transferDetailForm.account,
-                ]
-              );
-              db.run(
-                `UPDATE books_account_info set amount = amount + ? where id = ?`,
-                [
-                  this.transferDetailForm.detailed,
-                  this.transferDetailForm.aimAccount,
-                ]
-              );
-              db.run(`COMMIT`);
-              this.sendRowdata();
-            });
-            // 如果转出账户为资产类型
-          } else if (
-            this.accountType[this.transferDetailForm.account] === "asset"
-          ) {
-            db.serialize(() => {
-              db.run(`BEGIN TRANSACTION`);
-              db.run(
-                `INSERT INTO books_account_book(flow,detailed,account_info_id,aim_account_id,comment,when_time) values (?,?,?,?,?,?)`,
-                [
-                  "transfer",
-                  this.transferDetailForm.detailed,
-                  this.transferDetailForm.account,
-                  this.transferDetailForm.aimAccount,
-                  this.transferDetailForm.comment,
-                  this.transferDetailForm.when,
-                ]
-              );
-              db.run(
-                `UPDATE books_account_info set amount = amount - ? where id = ?`,
-                [
-                  this.transferDetailForm.detailed,
-                  this.transferDetailForm.account,
-                ]
-              );
-              db.run(
-                `UPDATE books_account_info set amount = amount - ? where id = ?`,
-                [
-                  this.transferDetailForm.detailed,
-                  this.transferDetailForm.aimAccount,
-                ]
-              );
-              db.run(`COMMIT`);
-              this.sendRowdata();
-            });
-            // 如果转出账户类型为负债
-          } else if (
-            this.accountType[this.transferDetailForm.account] === "debt"
-          ) {
-            db.serialize(() => {
-              db.run(`BEGIN TRANSACTION`);
-              db.run(
-                `INSERT INTO books_account_book(flow,detailed,account_info_id,aim_account_id,comment,when_time) values (?,?,?,?,?,?)`,
-                [
-                  "transfer",
-                  this.transferDetailForm.detailed,
-                  this.transferDetailForm.account,
-                  this.transferDetailForm.aimAccount,
-                  this.transferDetailForm.comment,
-                  this.transferDetailForm.when,
-                ]
-              );
-              db.run(
-                `UPDATE books_account_info set amount = amount + ? where id = ?`,
-                [
-                  this.transferDetailForm.detailed,
-                  this.transferDetailForm.account,
-                ]
-              );
-              db.run(
-                `UPDATE books_account_info set amount = amount + ? where id = ?`,
-                [
-                  this.transferDetailForm.detailed,
-                  this.transferDetailForm.aimAccount,
-                ]
-              );
-              db.run(`COMMIT`);
-              this.sendRowdata();
-            });
-          } else {
-            // 提交失败
-            this.$notify({ type: "error", message: "提交失败" });
-          }
+          addTransfer(
+            this.transferDetailForm.detailed,
+            this.transferDetailForm.account,
+            this.transferDetailForm.aimAccount,
+            this.transferDetailForm.comment,
+            this.transferDetailForm.when,
+          )
+          this.sendRowdata()
           this.transferDetailForm.detailed = "";
         } else {
           this.$notify({ type: "error", message: "提交失败" });
@@ -504,35 +227,14 @@ export default {
       });
     },
     getselectoptions() {
-      let selectoptions = [];
-      db.each(`select * from books_account_info`, [], (err, row) => {
-        let option = { value: 1, label: "default" };
-        if (err) {
-          throw err;
-        }
-        option.value = row.id;
-        option.label = row.name;
-        selectoptions.push(option);
-      });
-      return selectoptions;
+      return getselectoptions_s()
     },
     //获取账户类型，账户有资产账户和负债账户
     getAccountType() {
-      let accountTypes = {};
-      db.each(`select * from books_account_info`, [], (err, row) => {
-        if (err) {
-          throw err;
-        }
-        accountTypes[row.id] = row.type;
-      });
-      return accountTypes;
+      return getAccountType_s()
     },
     getselect: async function (flow) {
-      let rows = await db.asyncAll(
-        `select id,first_level as name from books_account_category_first where flow_sign = ?`,
-        [flow]
-      );
-      return rows;
+      return getselects(flow)
     },
     getdata: function () {
       // 获取账户类型
@@ -542,7 +244,7 @@ export default {
       this.getselect("income").then((value) => {
         this.incomeOptions = value;
       });
-      this.selectoptions = this.getselectoptions();
+      this.getselectoptions().then(r=>{this.selectoptions = r})
       this.accountType = this.getAccountType();
     },
   },
@@ -553,17 +255,20 @@ export default {
 </script>
 
 <style scoped>
-div >>> .el-input__inner {
+:deep(.el-input__inner) {
   height: 30px;
+  width: 130px;
+}
+
+:deep(.el-form-item__content) {
   width: 150px;
 }
-.el-form-item >>> .el-form-item__content {
-  width: 150px;
-}
+
 .el-form-item {
   height: 20px;
 }
-.el-form-item >>> .el-button {
+
+:deep(.el-button) {
   height: 30px;
   padding: 0px 15px;
   border-radius: 100px;

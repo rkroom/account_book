@@ -2,7 +2,7 @@
   <div>
     <!--表格组件-->
     <el-table :data="tableData" :cell-style="cellStyle">
-      <el-table-column prop="date" width="139">
+      <el-table-column prop="date" width="150">
         <template #header>
           日期
           <DateTimePicker v-model="selectedTime"></DateTimePicker>
@@ -11,26 +11,12 @@
       <el-table-column prop="category">
         <template #header>
           分类
-          <el-popover
-            ref="categoryPopover"
-            placement="right"
-            trigger="manual"
-            v-model:visible="categoryVisible"
-          >
+          <el-popover ref="categoryPopover" placement="right" trigger="manual" v-model:visible="categoryVisible">
             <template #reference>
-              <el-button
-                type="text"
-                icon="el-icon-arrow-down"
-                @click="categoryVisible = !categoryVisible"
-              ></el-button>
+              <el-button link  icon="ArrowDownBold" @click="categoryVisible = !categoryVisible"></el-button>
             </template>
-            <el-cascader
-              ref="categoriesCascader"
-              :options="categoriesOptions"
-              :props="categoryDefaultParams"
-              v-model="categoryId"
-              :show-all-levels="false"
-            ></el-cascader>
+            <el-cascader ref="categoriesCascader" :options="categoriesOptions" :props="categoryDefaultParams"
+              v-model="categoryId" :show-all-levels="false"></el-cascader>
             <div class="el-table-filter__bottom">
               <button @click="cleanCategory">清空</button>
               <button @click="handleCategoryChange">确定</button>
@@ -41,26 +27,12 @@
       <el-table-column prop="flow">
         <template #header>
           收支
-          <el-popover
-            ref="flowPopover"
-            placement="right"
-            trigger="manual"
-            v-model:visible="flowVisible"
-          >
+          <el-popover ref="flowPopover" placement="right" trigger="manual" v-model:visible="flowVisible">
             <template #reference>
-              <el-button
-                type="text"
-                icon="el-icon-arrow-down"
-                @click="flowVisible = !flowVisible"
-              ></el-button>
+              <el-button link  icon="ArrowDownBold" @click="flowVisible = !flowVisible"></el-button>
             </template>
-            <el-cascader
-              ref="flowCascader"
-              :options="flowOptions"
-              :props="defaultParams"
-              v-model="selectFlow"
-              :show-all-levels="false"
-            ></el-cascader>
+            <el-cascader ref="flowCascader" :options="flowOptions" :props="defaultParams" v-model="selectFlow"
+              :show-all-levels="false"></el-cascader>
             <div class="el-table-filter__bottom">
               <button @click="cleanFlow">清空</button>
               <button @click="handleFlowChange">确定</button>
@@ -72,26 +44,12 @@
       <el-table-column prop="account" width="100">
         <template #header>
           账户
-          <el-popover
-            ref="accountPopover"
-            placement="right"
-            trigger="manual"
-            v-model:visible="accountVisible"
-          >
+          <el-popover ref="accountPopover" placement="right" trigger="manual" v-model:visible="accountVisible">
             <template #reference>
-              <el-button
-                type="text"
-                icon="el-icon-arrow-down"
-                @click="accountVisible = !accountVisible"
-              ></el-button>
+              <el-button link  icon="ArrowDownBold" @click="accountVisible = !accountVisible"></el-button>
             </template>
-            <el-cascader
-              ref="accountCascader"
-              :options="accountOptions"
-              :props="defaultParams"
-              v-model="selectAccount"
-              :show-all-levels="false"
-            ></el-cascader>
+            <el-cascader ref="accountCascader" :options="accountOptions" :props="defaultParams" v-model="selectAccount"
+              :show-all-levels="false"></el-cascader>
             <div class="el-table-filter__bottom">
               <button @click="cleanAccount">清空</button>
               <button @click="handleAccountChange">确定</button>
@@ -99,37 +57,37 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="aim_account" width="100" label="目标账户">
+      <el-table-column prop="aim_account" width="120" label="目标账户">
       </el-table-column>
-      <el-table-column
-        prop="comment"
-        label="备注"
-        :show-overflow-tooltip="true"
-        width="100"
-      ></el-table-column>
+      <el-table-column prop="comment" label="备注" :show-overflow-tooltip="true" width="100"></el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button
-          >
+          <el-button link  @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
+        <el-pagination
       background
       layout="prev, pager, next"
       :total="totalPage"
       :page-size="pageSize"
       @current-change="handlePage"
-    ></el-pagination>
+    />
   </div>
 </template>
 <script>
-import db from "@/utils/sqdb";
-import DateTimePicker from "@/components/DateTimePicker";
+import DateTimePicker from "./DateTimePicker.vue";
+import {
+  getCategory,
+  getAccountNames,
+  deleteBill,
+  gettotalpages,
+  gettabledata_s,
+  getAccountType_s,
+  getCategoryName_s,
+  getAccountOptions_s,
+  getSelect_s,
+} from '../tools/dbTools'
 
 export default {
   name: "BookTable",
@@ -143,16 +101,9 @@ export default {
         children: "children",
         lazy: true,
         lazyLoad(node, resolve) {
-          db.all(
-            `select id,specific_category as name,'leaf'leaf from books_account_category_specific where parent_category_id = ?`,
-            [node.data.id],
-            (err, rows) => {
-              if (err) {
-                throw err;
-              }
-              resolve(rows);
-            }
-          );
+          getCategory(node.data.id).then(r => {
+            resolve(r)
+          })
         },
       },
       defaultParams: {
@@ -231,16 +182,8 @@ export default {
         });
       });
     },
-    // 获取账户名
     getAccountName: function () {
-      let accountNames = {};
-      db.each(`select * from books_account_info`, [], (err, row) => {
-        if (err) {
-          throw err;
-        }
-        accountNames[row.id] = row.name;
-      });
-      return accountNames;
+      return getAccountNames()
     },
     handleDelete(index, row) {
       // 删除记账记录
@@ -254,68 +197,7 @@ export default {
         }
       )
         .then(() => {
-          db.serialize(() => {
-            db.run(`BEGIN TRANSACTION`);
-            if (row.flowSign === "consume") {
-              if (this.accountType[row.account_id] === "asset") {
-                db.run(
-                  `UPDATE books_account_info set amount = amount + ? where id = ?`,
-                  [row.detailed, row.account_id]
-                );
-              } else if (this.accountType[row.account_id] === "debt") {
-                db.run(
-                  `UPDATE books_account_info set amount = amount - ? where id = ?`,
-                  [row.detailed, row.account_id]
-                );
-              }
-            } else if (row.flowSign === "income") {
-              if (this.accountType[row.account_id] === "asset") {
-                db.run(
-                  `UPDATE books_account_info set amount = amount - ? where id = ?`,
-                  [row.detailed, row.account_id]
-                );
-              } else if (this.accountType[row.account_id] === "debt") {
-                db.run(
-                  `UPDATE books_account_info set amount = amount + ? where id = ?`,
-                  [row.detailed, row.account_id]
-                );
-              }
-            } else if (row.flowSign === "transfer") {
-              if (
-                this.accountType[row.account_id] ===
-                this.accountType[row.aim_account_id]
-              ) {
-                db.run(
-                  `UPDATE books_account_info set amount = amount + ? where id = ?`,
-                  [row.detailed, row.account_id]
-                );
-                db.run(
-                  `UPDATE books_account_info set amount = amount - ? where id = ?`,
-                  [row.detailed, row.aim_account_id]
-                );
-              } else if (this.accountType[row.account_id] === "asset") {
-                db.run(
-                  `UPDATE books_account_info set amount = amount + ? where id = ?`,
-                  [row.detailed, row.account_id]
-                );
-                db.run(
-                  `UPDATE books_account_info set amount = amount + ? where id = ?`,
-                  [row.detailed, row.aim_account_id]
-                );
-              } else if (this.accountType[row.account_id] === "debt") {
-                db.run(
-                  `UPDATE books_account_info set amount = amount - ? where id = ?`,
-                  [row.detailed, row.account_id]
-                );
-                db.run(
-                  `UPDATE books_account_info set amount = amount - ? where id = ?`,
-                  [row.detailed, row.aim_account_id]
-                );
-              }
-            }
-            db.run(`DELETE  From books_account_book where id = ?`, [row.id]);
-            db.run(`COMMIT`);
-          });
+          deleteBill(row.id);
           this.tableData.splice(index, 1);
           this.$notify({
             type: "success",
@@ -335,45 +217,26 @@ export default {
     },
     // 获取总页数
     gettotalpage() {
-      db.get(
-        `SELECT COUNT(*) as count from ( SELECT * FROM books_account_book WHERE types_id is ` +
-          this.categoryNull +
-          ` types_id like ? )  WHERE account_info_id like ? and when_time >= ? and when_time <= ? and flow like ? `,
-        [
-          this.categoryParam[this.categoryParam.length - 1],
-          this.accountParam,
-          this.selectedTime[0],
-          this.selectedTime[1],
-          this.flowParam[0],
-        ],
-        (err, row) => {
-          if (err) {
-            throw err;
-          }
-          this.totalPage = row.count;
-        }
-      );
+      gettotalpages(
+        this.categoryNull,
+        this.categoryParam[this.categoryParam.length - 1],
+        this.accountParam,
+        this.selectedTime[0],
+        this.selectedTime[1],
+        this.flowParam[0],
+      ).then(r=>{this.totalPage = r.count})
     },
     // 获取数据
     async gettabledata(pageSize, page) {
-      this.tableData = await db.asyncAll(
-        `select i.name as account,b.account_info_id as account_id, case when b.flow = 'consume' then '支出' when b.flow = 'income' then '收入' 
-        when b.flow = 'transfer' then '转账' end as flow,i2.name as aim_account,b.aim_account_id,s.specific_category as category,b.comment,
-        strftime('%Y-%m-%d %H:%M',b.when_time) as date,b.detailed,b.flow as flowSign,b.id from books_account_book as b left join books_account_info as i
-         on b.account_info_id = i.id left join books_account_info as i2 on b.aim_account_id = i2.id left join books_account_category_specific as s on 
-         b.types_id = s.id where account_info_id like ? and (types_id is ` +
-          this.categoryNull +
-          ` types_id like ?) and when_time >= ? and when_time <= ? and flow like ? order by when_time desc limit ?
-          offset ?`,
-        [
-          this.accountParam,
-          this.categoryParam[this.categoryParam.length - 1],
-          this.selectedTime[0],
-          this.selectedTime[1],
-          this.flowParam[0],
-          pageSize,
-          page,
-        ]
+      this.tableData = await gettabledata_s(
+        this.categoryNull,
+        this.accountParam,
+        this.categoryParam[this.categoryParam.length - 1],
+        this.selectedTime[0],
+        this.selectedTime[1],
+        this.flowParam[0],
+        pageSize,
+        page,
       );
     },
     //当分类弹窗确定点击时
@@ -423,40 +286,21 @@ export default {
     },
     handleAccountChange: function () {
       this.accountParam = this.selectAccount[0];
-      console.log(this.selectAccount[0]);
       this.gettotalpage();
       this.gettabledata(this.pageSize, 0);
       this.accountVisible = false;
     },
     // 获取账户类型
     getAccountType() {
-      let accountTypes = {};
-      db.each(`select * from books_account_info`, [], (err, row) => {
-        if (err) {
-          throw err;
-        }
-        accountTypes[row.id] = row.type;
-      });
-      this.accountType = accountTypes;
+      this.accountType = getAccountType_s();
     },
     // 获取分类名
     getCategoryName() {
-      let categoryName = {};
-      db.each(
-        `SELECT id,specific_category from books_account_category_specific`,
-        [],
-        (err, row) => {
-          if (err) {
-            throw err;
-          }
-          categoryName[row.id] = row.specific_category;
-        }
-      );
-      this.categoryName = categoryName;
+      this.categoryName = getCategoryName_s();
     },
     //获取账户
     getAccountOptions: async function () {
-      return await db.asyncAll(`select id,name from books_account_info`, []);
+      return await getAccountOptions_s();
     },
     // 初始化数据
     async getdata() {
@@ -469,9 +313,7 @@ export default {
       await this.gettotalpage();
     },
     getSelect: async function () {
-      return await db.asyncAll(
-        `select id,first_level as name from books_account_category_first`
-      );
+      return await getSelect_s()
     },
   },
   created: function () {

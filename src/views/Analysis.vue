@@ -1,53 +1,33 @@
 <template>
   <el-row type="flex">
     <div ref="divbookPopover">
-      <el-popover
-        placement="bottom"
-        trigger="manual"
-        @after-enter="show"
-        v-model:visible="popoverVisible"
-      >
+      <el-popover placement="bottom-start" trigger="manual" @after-enter="show" v-model:visible="popoverVisible"
+        width="750px">
         <template #reference><span></span></template>
-        <BookTable
-          :category="bookTableCategory"
-          :time="queryDate"
-          :cellStyle="cellStyle"
-          :style="{ width: '750px' }"
-        ></BookTable>
+        <BookTable :category="bookTableCategory" :time="queryDate" :cellStyle="cellStyle" :style="{ width: '750px' }">
+        </BookTable>
       </el-popover>
     </div>
     <el-col>
-      <div
-        id="myChart"
-        :style="{ width: '600px', height: '500px' }"
-        ref="pieCharts"
-      ></div>
+      <div id="myChart" :style="{ width: '600px', height: '500px' }" ref="pieCharts"></div>
     </el-col>
     <el-col>
       <p>{{ queryDate }}</p>
-      <el-select
-        v-model="selectedOption"
-        placeholder="请选择"
-        @change="changeOption"
-      >
-        <el-option
-          v-for="item in firstLevelOptions"
-          :key="item.id"
-          :label="item.first_level"
-          :value="item.id"
-        ></el-option>
+      <el-select v-model="selectedOption" placeholder="请选择" @change="changeOption">
+        <el-option v-for="item in firstLevelOptions" :key="item.id" :label="item.first_level" :value="item.id">
+        </el-option>
       </el-select>
-      <DateTimePicker v-model="queryDate"></DateTimePicker>
+      日期<DateTimePicker v-model="queryDate"></DateTimePicker>
     </el-col>
   </el-row>
 </template>
 
 <script>
+import { getFirstLevel_A, getSpecific_A, getSpecificIdandName_A } from "../tools/dbTools"
 import * as echarts from "echarts";
-import db from "@/utils/sqdb";
-import { currentlyMonthDays } from "@/utils/common";
-import DateTimePicker from "@/components/DateTimePicker";
-import BookTable from "@/components/BookTable";
+import { currentlyMonthDays } from "../tools/tools";
+import DateTimePicker from "../components/DateTimePicker.vue";
+import BookTable from "../components/BookTable.vue";
 
 export default {
   name: "book-analysis",
@@ -70,11 +50,8 @@ export default {
               position: "top", // 在上方显示
               distance: 20, // 距离图形元素的距离。当 position 为字符描述值（如 'top'、'insideRight'）时候有效。
               verticalAlign: "middle",
-              textStyle: {
-                // 数值样式
-                color: "black",
-                fontSize: 12,
-              },
+              color: "black",
+              fontSize: 12,
             },
           },
         ],
@@ -88,7 +65,7 @@ export default {
       // 一级分类选项
       firstLevelOptions: [],
       selectedOption: this.$route.query.firstLevel
-        ? this.$route.query.firstLevel
+        ? Number(this.$route.query.firstLevel)
         : 1,
       SpecificIdandName: [],
       bookTableCategory: "",
@@ -107,40 +84,29 @@ export default {
     },
     hidePanel: function (e) {
       // 如果鼠标点击在弹出窗区域外则关闭弹出窗
-      if (!this.$refs.divbookPopover.contains(e.target)) {
+      if (!this.$refs.divbookPopover.contains(this.$refs.divbookPopover)) {
         this.popoverVisible = false;
         this.hide();
       }
     },
     // 获取一级分类
     async getFirstLevel() {
-      this.firstLevelOptions = await db.asyncAll(
-        `SELECT id,first_level FROM books_account_category_first`,
-        []
-      );
+      this.firstLevelOptions = await getFirstLevel_A()
     },
     // 获取二级分类数据
     getSpecific() {
       let xAxis = [];
       let yAxis = [];
-      db.each(
-        `SELECT s.id,s.specific_category,sum(b.detailed) as sum FROM (SELECT id,specific_category FROM books_account_category_specific where parent_category_id = ?) as s LEFT JOIN books_account_book as b on s.id = b.types_id WHERE b.when_time > ? AND when_time < ? GROUP by s.id`,
-        [this.selectedOption, this.queryDate[0], this.queryDate[1]],
-        (err, row) => {
-          if (err) {
-            throw err;
-          }
+      getSpecific_A(this.selectedOption, this.queryDate[0], this.queryDate[1]).then(rows => {
+        for (let row of rows) {
           xAxis.push(row.specific_category);
           yAxis.push(row.sum.toFixed(2));
         }
-      );
+      })
       return [xAxis, yAxis];
     },
     getSpecificIdandName: async function () {
-      let rows = await db.asyncAll(
-        `SELECT id,specific_category FROM books_account_category_specific`,
-        []
-      );
+      let rows = await getSpecificIdandName_A()
       let tmp = {};
       rows.forEach((row) => {
         tmp[row.specific_category] = row.id;
@@ -171,6 +137,10 @@ export default {
     setTimeout(() => {
       this.myChart.setOption(this.chartOption);
     }, 500);
+  },
+  beforeUnmount: function () {
+    //卸载前移除监听鼠标点击事件
+    document.removeEventListener("click", this.hidePanel, false);
   },
   watch: {
     tmp: function (newValue, oldValue) {

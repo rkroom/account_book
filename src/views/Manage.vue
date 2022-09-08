@@ -20,11 +20,7 @@
         <br />
       </el-col>
       <el-col :span="16">
-        <div
-          id="myChart"
-          :style="{ width: '500px', height: '210px' }"
-          ref="pieCharts"
-        ></div>
+        <div id="myChart" :style="{ width: '500px', height: '210px' }" ref="pieCharts"></div>
       </el-col>
       <el-col :span="3">
         <DateTimePicker v-model="queryDate"></DateTimePicker>
@@ -35,31 +31,15 @@
     <br />
     <!--添加分类-->
     <el-row type="flex">
-      <el-form
-        ref="firstCategoryForm"
-        :model="firstCategoryForm"
-        :inline="true"
-        class="demo-form-inline"
-        :rules="rules"
-      >
+      <el-form ref="firstCategoryForm" :model="firstCategoryForm" :inline="true" class="demo-form-inline"
+        :rules="rules">
         <el-form-item label="一级分类" prop="firstLevel">
-          <el-input
-            v-model="firstCategoryForm.firstLevel"
-            placeholder="请输入分类名称"
-          ></el-input>
+          <el-input v-model="firstCategoryForm.firstLevel" placeholder="请输入分类名称"></el-input>
         </el-form-item>
         <el-form-item label="分类类型" prop="flow">
-          <el-select
-            v-model="firstCategoryForm.flow"
-            placeholder="请选择"
-            default-first-option
-          >
-            <el-option
-              v-for="item in selectoptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
+          <el-select v-model="firstCategoryForm.flow" placeholder="请选择" default-first-option>
+            <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -69,37 +49,19 @@
     </el-row>
     <el-row type="flex">
       <!--添加二级分类-->
-      <el-form
-        ref="specificCategoryForm"
-        :model="specificCategoryForm"
-        :inline="true"
-        class="demo-form-inline"
-        :rules="rules"
-      >
+      <el-form ref="specificCategoryForm" :model="specificCategoryForm" :inline="true" class="demo-form-inline"
+        :rules="rules">
         <el-form-item label="二级分类" prop="specificLevel">
-          <el-input
-            v-model="specificCategoryForm.specificLevel"
-            placeholder="请输入分类名称"
-          ></el-input>
+          <el-input v-model="specificCategoryForm.specificLevel" placeholder="请输入分类名称"></el-input>
         </el-form-item>
         <el-form-item label="一级分类" prop="superiorLevel">
-          <el-select
-            v-model="specificCategoryForm.superiorLevel"
-            placeholder="请选择"
-            default-first-option
-          >
-            <el-option
-              v-for="item in superioroptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
+          <el-select v-model="specificCategoryForm.superiorLevel" placeholder="请选择" default-first-option>
+            <el-option v-for="item in superioroptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button @click="submitSpecificForm('specificCategoryForm')"
-            >提交</el-button
-          >
+          <el-button @click="submitSpecificForm('specificCategoryForm')">提交</el-button>
         </el-form-item>
       </el-form>
     </el-row>
@@ -107,10 +69,11 @@
 </template>
 
 <script>
-import db from "@/utils/sqdb";
+import { getFirstLevelConsumeAnalysis_m, totalBalance, addFirstCategory, addSpecificCategory, getselectoptions_m, timeStatistics, getFirstLevelIdAndName_m } from '../tools/dbTools'
 import * as echarts from "echarts";
-import { currentlyMonthDays, previousMonthDays } from "@/utils/common";
-import DateTimePicker from "@/components/DateTimePicker";
+import { currentlyMonthDays, previousMonthDays } from "../tools/tools";
+import DateTimePicker from "../components/DateTimePicker.vue";
+
 
 export default {
   name: "manage",
@@ -173,10 +136,8 @@ export default {
               //饼图图形上的文本标签
               show: true,
               position: "outer", //标签的位置
-              textStyle: {
-                fontWeight: 300,
-                fontSize: 13, //文字的字体大小
-              },
+              fontWeight: 300,
+              fontSize: 13, //文字的字体大小
               formatter: "{b} \n {c} ({d}%)",
             },
           },
@@ -188,58 +149,24 @@ export default {
   },
   methods: {
     // 返回一级分类名字和ID组成的对象
-    getFirstLevelIdAndName() {
-      let tmp = {};
-      db.each(
-        `SELECT id,first_level FROM books_account_category_first`,
-        [],
-        (err, row) => {
-          tmp[row.first_level] = row.id;
-        }
-      );
-      return tmp;
+    getFirstLevelIdAndName: async function () {
+      return await getFirstLevelIdAndName_m()
     },
     // 获取一级分类消费信息
-    getFirstLevelConsumeAnalysis: async function () {
-      this.tmp = await db.asyncAll(
-        `SELECT round(sum(b.detailed),2) as value,f.first_level as name FROM books_account_book as b left JOIN 
-      books_account_category_specific as s on b.types_id = s.id LEFT JOIN books_account_category_first as f on s.parent_category_id = f.id 
-      WHERE flow="consume" AND when_time >= ? AND when_time <= ? GROUP BY parent_category_id`,
-        [this.queryDate[0], this.queryDate[1]]
-      );
+    getFirstLevelConsumeAnalysis: function () {
+      getFirstLevelConsumeAnalysis_m(this.queryDate[0], this.queryDate[1]).then(r => { this.tmp = r })
     },
     getAccountInfo() {
       // 获取资产总额
-      db.get(
-        `SELECT round(sum(amount),2) as amount FROM books_account_info WHERE type = 'asset'`,
-        [],
-        (err, row) => {
-          if (err) {
-            throw err;
-          }
-          this.totalAssets = row.amount;
-        }
-      );
+      totalBalance('asset').then(r => { this.totalAssets = r.balance })
       // 获取负债总额
-      db.get(
-        `SELECT round(sum(amount),2) as amount FROM books_account_info WHERE type = 'debt'`,
-        [],
-        (err, row) => {
-          if (err) {
-            throw err;
-          }
-          this.totalDebts = row.amount;
-        }
-      );
+      totalBalance('debt').then(r => { this.totalDebts = 0 - r.balance })
     },
     submitForm(firstCategoryForm) {
       this.$refs[firstCategoryForm].validate((valid) => {
         if (valid) {
           // 提交一级分类
-          db.run(
-            `INSERT INTO books_account_category_first(first_level,flow_sign) values (?,?)`,
-            [this.firstCategoryForm.firstLevel, this.firstCategoryForm.flow]
-          );
+          addFirstCategory(this.firstCategoryForm.firstLevel, this.firstCategoryForm.flow);
           this.getselectoptions();
           this.$notify(this.firstCategoryForm.firstLevel + " 添加成功！");
           this.firstCategoryForm.firstLevel = "";
@@ -252,13 +179,7 @@ export default {
       this.$refs[specificCategoryForm].validate((valid) => {
         if (valid) {
           // 提交二级分类
-          db.run(
-            `INSERT INTO books_account_category_specific(parent_category_id,specific_category) values (?,?)`,
-            [
-              this.specificCategoryForm.superiorLevel,
-              this.specificCategoryForm.specificLevel,
-            ]
-          );
+          addSpecificCategory(this.specificCategoryForm.superiorLevel, this.specificCategoryForm.specificLevel);
           this.$notify(this.specificCategoryForm.specificLevel + " 添加成功！");
           this.specificCategoryForm.specificLevel = "";
         } else {
@@ -268,54 +189,31 @@ export default {
     },
     getselectoptions() {
       // 获取一级分类
-      let selectoptions = [];
-      const flowlist = { consume: "支出", income: "收入" };
-      db.each(`select * from books_account_category_first`, [], (err, row) => {
-        let option = { value: 1, label: "default" };
-        if (err) {
-          throw err;
-        }
-        option.value = row.id;
-        option.label = row.first_level + "（" + flowlist[row.flow_sign] + "）";
-        selectoptions.push(option);
-      });
-      this.superioroptions = selectoptions;
+      getselectoptions_m().then(r => { this.superioroptions = r })
     },
     getCurrentlyMonthStatistics(flow) {
       // 获取本月数据
       let cmd = currentlyMonthDays();
-      db.get(
-        `SELECT round(sum(detailed),2) as amount FROM books_account_book WHERE flow = ? AND when_time > ? AND when_time < ?`,
-        [flow, cmd[0], cmd[1]],
-        (err, row) => {
-          if (err) {
-            throw err;
-          }
-          if (flow === "consume") {
-            this.currentlyMonthConsume = row.amount ? row.amount : 0;
-          } else if (flow === "income") {
-            this.currentlyMonthIncome = row.amount ? row.amount : 0;
-          }
+      timeStatistics(flow, cmd[0], cmd[1]).then(row => {
+        if (flow === "consume") {
+          this.currentlyMonthConsume = row.amount ? row.amount : 0;
+        } else if (flow === "income") {
+          this.currentlyMonthIncome = row.amount ? row.amount : 0;
         }
-      );
+      })
+
     },
     getPreviousMonthStatistics(flow) {
       // 获取上月数据
       let cmd = previousMonthDays();
-      db.get(
-        `SELECT round(sum(detailed),2) as amount FROM books_account_book WHERE flow = ? AND when_time > ? AND when_time < ?`,
-        [flow, cmd[0], cmd[1]],
-        (err, row) => {
-          if (err) {
-            throw err;
-          }
-          if (flow === "consume") {
-            this.previousMonthConsume = row.amount ? row.amount : 0;
-          } else if (flow === "income") {
-            this.previousMonthIncome = row.amount ? row.amount : 0;
-          }
+      timeStatistics(flow, cmd[0], cmd[1]).then(row => {
+        if (flow === "consume") {
+          this.previousMonthConsume = row.amount ? row.amount : 0;
+        } else if (flow === "income") {
+          this.previousMonthIncome = row.amount ? row.amount : 0;
         }
-      );
+      })
+
     },
   },
   mounted: async function () {
@@ -328,11 +226,12 @@ export default {
     // 基于准备好的dom，初始化echarts实例
     let that = this;
     this.myChart = echarts.init(document.getElementById("myChart"));
-    this.myChart.on("click", function (params) {
+    this.myChart.on("click", async function (params) {
+      const firstLevelIdAndName = await that.firstLevelIdAndName
       that.$router.push({
         path: "/bookanalysis",
         query: {
-          firstLevel: that.firstLevelIdAndName[params.name],
+          firstLevel: firstLevelIdAndName[params.name],
           date: that.queryDate,
         },
       });

@@ -11,12 +11,13 @@
     </el-row>
   </div>
 </template>
-<script>
-import PayForm from "@/components/PayForm"; //引入记账组件
-import BookTable from "@/components/BookTable"; //引入显示账单组件
+<script lang="ts">
+import PayForm from "../components/PayForm.vue"; //引入记账组件
+import BookTable from "../components/BookTable.vue"; //引入显示账单组件
+
 
 export default {
   name: "book-page",
-  components: { PayForm, BookTable }, //注册为组件
+  components: { PayForm,BookTable  }, //注册为组件
 };
 </script>
