@@ -10,6 +10,7 @@ if (process.env.NODE_ENV === "development" || import.meta.env.DEV) {
   console.log(configFile)
 }
 
+
 app.disableHardwareAcceleration()
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -188,6 +189,7 @@ async function createWindow() {
 
 ipcMain.handle('getPasswd', IpcPasswd)
 ipcMain.handle('newdb', mainNewDb)
+ipcMain.handle('getFileName', openFile)
 
 app.whenReady().then(() => {
 
@@ -258,3 +260,16 @@ ipcMain.on('reloadWin', (_event, _message) => {
   win?.close()
   createWindow()
 })
+
+async function openFile() {
+  const fileName = await dialog.showOpenDialog({
+    //打开文件对话框
+    title: "打开文件",
+    filters: [
+      //文件过滤器
+      { name: "账单文件", extensions: ["xlsx", "xls"] },
+      { name: "All Files", extensions: ["*"] },
+    ],
+  })
+  return fileName.filePaths
+}

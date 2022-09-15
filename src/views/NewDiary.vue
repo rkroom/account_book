@@ -36,14 +36,14 @@
 
 <script>
 import { updateDiary, addDiary, getLastDiaryId } from '../tools/dbTools'
-import { dateFtt } from "../tools/tools"; //日期格式化
+import { dateFmt } from "../tools/tools"; //日期格式化
 
 export default {
     name: "newdiary",
     data() {
         return {
             diary: {
-                datetime: dateFtt("yyyy-MM-dd hh:mm:ss", new Date()),
+                datetime: dateFmt("yyyy-MM-dd hh:mm:ss", new Date()),
                 weather: "晴",
                 title: null,
                 content: "",

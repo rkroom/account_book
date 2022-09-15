@@ -46,4 +46,7 @@ export default defineConfig({
     host: pkg.debug.env.VITE_DEV_SERVER_HOSTNAME,
     port: pkg.debug.env.VITE_DEV_SERVER_PORT,
   } : undefined,
+  build: {
+    chunkSizeWarningLimit: 1500,
+  },
 })

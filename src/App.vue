@@ -10,6 +10,7 @@
               <el-menu-item index="/bookaccount">账户</el-menu-item>
               <el-menu-item index="/bookmanage">管理</el-menu-item>
               <el-menu-item index="/bookanalysis">报表</el-menu-item>
+              <el-menu-item index="/importAndExport">导入</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
           <el-sub-menu index="2">
@@ -37,7 +38,6 @@
 
 <script>
 import { changeDbPassword } from './tools/dbTools'
-
 
 export default {
   name: "account_book",

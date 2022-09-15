@@ -133,7 +133,7 @@ import {
     getTableData_schedule,
     getHandleInfo_schedule
 } from "../tools/dbTools"
-import { dateFtt } from "../tools/tools";
+import { dateFmt } from "../tools/tools";
 const pageSize = 13;
 
 export default {
@@ -174,7 +174,7 @@ export default {
         };
         return {
             schedule: {
-                createDate: dateFtt("yyyy-MM-dd hh:mm:ss", new Date()),
+                createDate: dateFmt("yyyy-MM-dd hh:mm:ss", new Date()),
                 round: null,
                 days: null,
                 expectDate: null,
@@ -236,7 +236,7 @@ export default {
                 year: "每年",
                 custom: "自定义",
             },
-            finshedDate: dateFtt("yyyy-MM-dd hh:mm:ss", new Date()),
+            finshedDate: dateFmt("yyyy-MM-dd hh:mm:ss", new Date()),
             expect: "预计日期",
             rowStatus: "",
             statusOptions: [
@@ -503,7 +503,7 @@ export default {
                                     row.datesign +
                                     "日" +
                                     "（" +
-                                    dateFtt(
+                                    dateFmt(
                                         "MM-dd",
                                         new Date(
                                             Math.ceil((nowdate - fdate) / (row.datesign * 86400000)) *

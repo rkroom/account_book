@@ -11,7 +11,7 @@ const routes: Array<RouteRecordRaw> = [
     name: "bookdetailed",
     component: () => import("../views/Book.vue"),
   },
-      
+
   {
     path: "/bookaccount",
     name: "bookaccount",
@@ -47,6 +47,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "schedule",
     component: () => import("../views/Schedule.vue"),
   },
+  {
+    path: "/importAndExport",
+    name: "importAndExport",
+    component: () => import("../views/ImportAndExport.vue"),
+  }
 ];
 
 const router = createRouter({
