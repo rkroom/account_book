@@ -83,7 +83,7 @@
 
 <script>
 import { addProject,getLastProjectID,getTableData_g,updateProject,getTotalPage_g } from '../tools/dbTools'
-import { dateFtt } from "../tools/tools";
+import { dateFmt } from "../tools/tools";
 const pageSize = 13;
 
 export default {
@@ -100,7 +100,7 @@ export default {
                 objective: "",
                 amount: null,
                 goaldate: "",
-                createdate: dateFtt("yyyy-MM-dd hh:mm:ss", new Date()),
+                createdate: dateFmt("yyyy-MM-dd hh:mm:ss", new Date()),
             },
             rules: {
                 createdate: [
@@ -132,7 +132,7 @@ export default {
             rowStatus: "",
             rowIndex: 0,
             status: { continuing: "进行中", finshed: "已完成", giveup: "已放弃" },
-            finshedDate: dateFtt("yyyy-MM-dd hh:mm:ss", new Date()),
+            finshedDate: dateFmt("yyyy-MM-dd hh:mm:ss", new Date()),
         };
     },
     methods: {

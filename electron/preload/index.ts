@@ -109,5 +109,6 @@ window.electronAPI = {
   changePasswdConfig: (passAndConfig: any) => ipcRenderer.send('changePasswdConfig', passAndConfig),
   quitApp: () => ipcRenderer.send('quitApp', null),
   changeDb: (callback: any) => ipcRenderer.on('changeDb', callback),
-  reloadWin: () => ipcRenderer.send('reloadWin', null)
+  reloadWin: () => ipcRenderer.send('reloadWin', null),
+  openFile: () => ipcRenderer.invoke("getFileName")
 }

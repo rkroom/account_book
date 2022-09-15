@@ -41,7 +41,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="detailed" label="金额"></el-table-column>
-      <el-table-column prop="account" width="100">
+      <el-table-column prop="account" width="120">
         <template #header>
           账户
           <el-popover ref="accountPopover" placement="right" trigger="manual" v-model:visible="accountVisible">

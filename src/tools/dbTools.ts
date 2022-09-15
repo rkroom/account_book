@@ -1,4 +1,3 @@
-
 let db = window.electronAPI.db
 
 db.asyncAll = function (sql: string, params: Array<string>) {
@@ -39,6 +38,18 @@ db.asyncEach = function (sql: string, params: Array<string>, action: any) {
       db.get("", function (err: Error, row: any) {
         resolve(true);
       });
+    });
+  });
+};
+
+db.asyncRun = function (sql: string, params: Array<string>) {
+  return new Promise((resolve, reject) => {
+    db.run(sql, params, function (this: any, err: Error) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({ lastID: this.lastID, changes: this.changes });
+      }
     });
   });
 };
@@ -513,6 +524,20 @@ function changeDbPassword(value: string) {
 }
 
 
+async function importBillsFromExcel(sqlParams: Array<Array<string>>) {
+  await db.asyncRun(`BEGIN TRANSACTION`);
+  for (let param of sqlParams) {
+    try {
+      await db.asyncRun("INSERT INTO books_account_book(types_id,flow,detailed,account_info_id,aim_account_id,comment,when_time) values (?,?,?,?,?,?,?)", param)
+    } catch (err) {
+      await db.asyncRun(`ROLLBACK`)
+      throw err
+    }
+  }
+  await db.asyncRun(`COMMIT`)
+  return true
+}
+
 export {
   getCategory,
   getselectoptions_s,
@@ -563,5 +588,6 @@ export {
   handleInfo_schedule,
   getTableData_schedule,
   getHandleInfo_schedule,
-  changeDbPassword
+  changeDbPassword,
+  importBillsFromExcel,
 }
