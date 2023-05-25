@@ -150,16 +150,37 @@ function gettotalpages(categoryNull: any, categoryParam: any, accountParam: any,
 }
 
 async function gettabledata_s(categoryNull: any, accountParam: any, categoryParam: any, selectedStartTime: any, selectedEndTime: any, flowParam: any, pageSize: any, page: any) {
+  if (accountParam === "%"){
+    return await db.asyncAll(
+      `select i.name as account,b.account_info_id as account_id, case when b.flow = 'consume' then '支出' when b.flow = 'income' then '收入' 
+      when b.flow = 'transfer' then '转账' end as flow,i2.name as aim_account,b.aim_account_id,s.specific_category as category,b.comment,
+      strftime('%Y-%m-%d %H:%M',b.when_time) as date,b.detailed,b.flow as flowSign,b.id from books_account_book as b left join books_account_info as i
+       on b.account_info_id = i.id left join books_account_info as i2 on b.aim_account_id = i2.id left join books_account_category_specific as s on 
+       b.types_id = s.id where account_info_id like ? and (types_id is ` +
+      categoryNull +
+      ` types_id like ?) and when_time >= ? and when_time <= ? and flow like ? order by when_time desc limit ?
+        offset ?`,
+      [
+        accountParam,
+        categoryParam,
+        selectedStartTime,
+        selectedEndTime,
+        flowParam,
+        pageSize,
+        page,
+      ])
+  }
   return await db.asyncAll(
     `select i.name as account,b.account_info_id as account_id, case when b.flow = 'consume' then '支出' when b.flow = 'income' then '收入' 
     when b.flow = 'transfer' then '转账' end as flow,i2.name as aim_account,b.aim_account_id,s.specific_category as category,b.comment,
     strftime('%Y-%m-%d %H:%M',b.when_time) as date,b.detailed,b.flow as flowSign,b.id from books_account_book as b left join books_account_info as i
      on b.account_info_id = i.id left join books_account_info as i2 on b.aim_account_id = i2.id left join books_account_category_specific as s on 
-     b.types_id = s.id where account_info_id like ? and (types_id is ` +
+     b.types_id = s.id where account_info_id like ? or aim_account_id like ? and (types_id is ` +
     categoryNull +
     ` types_id like ?) and when_time >= ? and when_time <= ? and flow like ? order by when_time desc limit ?
       offset ?`,
     [
+      accountParam,
       accountParam,
       categoryParam,
       selectedStartTime,
@@ -168,6 +189,7 @@ async function gettabledata_s(categoryNull: any, accountParam: any, categoryPara
       pageSize,
       page,
     ])
+
 }
 
 function getCategoryName_s() {
