@@ -248,7 +248,7 @@ export default {
       this.accountType = this.getAccountType();
     },
   },
-  created: function () {
+  mounted: function () {
     this.getdata();
   },
 };

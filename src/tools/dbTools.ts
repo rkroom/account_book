@@ -139,9 +139,10 @@ function gettotalpages(categoryNull: any, categoryParam: any, accountParam: any,
   return db.asyncGet(
     `SELECT COUNT(*) as count from ( SELECT * FROM books_account_book WHERE types_id is ` +
     categoryNull +
-    ` types_id like ? )  WHERE account_info_id like ? and when_time >= ? and when_time <= ? and flow like ? `,
+    ` types_id like ? )  WHERE (account_info_id like ? or aim_account_id like ?) and when_time >= ? and when_time <= ? and flow like ? `,
     [
       categoryParam,
+      accountParam,
       accountParam,
       selectedStartTime,
       selectedEndTime,
@@ -175,7 +176,7 @@ async function gettabledata_s(categoryNull: any, accountParam: any, categoryPara
     when b.flow = 'transfer' then '转账' end as flow,i2.name as aim_account,b.aim_account_id,s.specific_category as category,b.comment,
     strftime('%Y-%m-%d %H:%M',b.when_time) as date,b.detailed,b.flow as flowSign,b.id from books_account_book as b left join books_account_info as i
      on b.account_info_id = i.id left join books_account_info as i2 on b.aim_account_id = i2.id left join books_account_category_specific as s on 
-     b.types_id = s.id where account_info_id like ? or aim_account_id like ? and (types_id is ` +
+     b.types_id = s.id where (account_info_id like ? or aim_account_id like ?) and (types_id is ` +
     categoryNull +
     ` types_id like ?) and when_time >= ? and when_time <= ? and flow like ? order by when_time desc limit ?
       offset ?`,

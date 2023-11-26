@@ -13,8 +13,7 @@
     "paths": {},
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "allowJs": true,
-    "suppressImplicitAnyIndexErrors": true,
+    "allowJs": true
   },
   "exclude": [
     "node_modules",
