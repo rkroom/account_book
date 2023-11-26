@@ -2,23 +2,15 @@
 
 ## Project setup
 ```
-yarn install
+yarn 
 ```
 
 ### Compiles and hot-reloads for development
 ```
-yarn electron:serve
+yarn dev
 ```
 
 ### Compiles and minifies for production
 ```
-yarn electron:build
+yarn build
 ```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

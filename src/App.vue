@@ -1,31 +1,32 @@
 <template>
   <div id="app">
     <el-container style="border: 1px solid #eee">
-      <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+      <el-aside width="200px">
         <el-menu :default-openeds="openeds" :router="true">
-          <el-submenu index="1">
+          <el-sub-menu index="1">
             <template #title><i class="el-icon-message"></i>记账</template>
             <el-menu-item-group>
               <el-menu-item index="/bookdetailed">账本</el-menu-item>
               <el-menu-item index="/bookaccount">账户</el-menu-item>
               <el-menu-item index="/bookmanage">管理</el-menu-item>
               <el-menu-item index="/bookanalysis">报表</el-menu-item>
+              <el-menu-item index="/importAndExport">导入</el-menu-item>
             </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="2">
+          </el-sub-menu>
+          <el-sub-menu index="2">
             <template #title><i class="el-icon-menu"></i>日记</template>
             <el-menu-item-group>
               <el-menu-item index="/newdiary">新建</el-menu-item>
               <el-menu-item index="/listdiary">列表</el-menu-item>
             </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="3">
+          </el-sub-menu>
+          <el-sub-menu index="3">
             <template #title><i class="el-icon-menu"></i>计划</template>
             <el-menu-item-group>
               <el-menu-item index="/goal">目标</el-menu-item>
               <el-menu-item index="/schedule">日程</el-menu-item>
             </el-menu-item-group>
-          </el-submenu>
+          </el-sub-menu>
         </el-menu>
       </el-aside>
       <el-main>
@@ -36,9 +37,8 @@
 </template>
 
 <script>
-import db from "@/utils/sqdb";
-import { ipcRenderer } from "electron";
-import { changePasswdConfig } from "@/utils/common";
+import { changeDbPassword } from './tools/dbTools'
+
 export default {
   name: "account_book",
   data() {
@@ -49,18 +49,34 @@ export default {
   },
   created: function () {
     // 监听newdb事件，message为主进程发送的数据库文件路径与文简明
-    ipcRenderer.on("newdb", (event, message) => {
+    window.electronAPI.newDb((event, message) => {
+      this.$prompt("请输入密码", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+      }).then((r) => {
+          window.electronAPI.newDbSend({ dbfile: message, password: r.value })
+        }).catch(() => {
+           this.$notify({
+            type: "info",
+            message: "取消",
+          })
+        })
+    })
+    window.electronAPI.changeDb((event, message) => {
       this.$prompt("请输入密码", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
       })
         .then(({ value }) => {
-          //关闭数据库连接
-          db.close();
+          changeDbPassword(value).then(()=>{
           // 修改配置文件中的密码
-          changePasswdConfig(false, null);
-          // 将文件路径和密码发送到主进程监听的newdb事件
-          ipcRenderer.send("newdb", { dbfile: message, password: value });
+          window.electronAPI.changePasswdConfig(
+            {
+              isSave: false,
+              password: null
+            })
+          window.electronAPI.reloadWin()
+          })
         })
         .catch(() => {
           this.$message({
@@ -69,35 +85,7 @@ export default {
           });
         });
     });
-    // 监听changedb
-    ipcRenderer.on("changedb", (event, message) => {
-      this.$prompt("请输入密码", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-      })
-        .then(({ value }) => {
-          db.run(`PRAGMA rekey = '` + value + `'`);
-          // 修改配置文件中的密码
-          changePasswdConfig(false, null);
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "取消",
-          });
-        });
-    });
-  },
-};
+    this.$router.push("/")
+  }
+}
 </script>
-<style>
-.el-header {
-  background-color: #b3c0d1;
-  color: #333;
-  line-height: 60px;
-}
-
-.el-aside {
-  color: #333;
-}
-</style>

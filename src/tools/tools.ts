@@ -1,36 +1,6 @@
-import fse from "fs-extra"; // 读取配置文件
-import electron from "electron";
+import SSF from 'ssf'
 
-//配置文件路径
-const configFile = electron.remote.getGlobal("shareObject").configFile;
-
-//文件编码
-const charEncoding = "utf-8";
-
-//获取密码
-function getPasswd(): string {
-  const password = JSON.parse(fse.readFileSync(configFile, charEncoding))[
-    "password"
-  ];
-  return password;
-}
-
-// 修改密码设置
-function changePasswdConfig(isSave: boolean, password: string): void {
-  if (isSave === true) {
-    // 如果需要记住密码，则将密码写入配置文件
-    const config = JSON.parse(fse.readFileSync(configFile, charEncoding));
-    config["password"] = password;
-    fse.writeFileSync(configFile, JSON.stringify(config));
-  } else {
-    // 如果不需要记住密码，则将密码设置为null
-    const config = JSON.parse(fse.readFileSync(configFile, charEncoding));
-    config["password"] = null;
-    fse.writeFileSync(configFile, JSON.stringify(config));
-  }
-}
-
-function dateFtt(fmt: string, date: Date): string {
+function dateFmt(fmt: string, date: Date): string {
   const o: any = {
     "M+": date.getMonth() + 1,
     "d+": date.getDate(),
@@ -91,10 +61,20 @@ function previousMonthDays(): Array<string> {
   ];
 }
 
+function isValidKey(key: string | number | symbol, object: object): key is keyof typeof object {
+  return key in object
+}
+
+function parseExcelDate(n: number, isDate1904: boolean) {
+  const parsed = SSF.parse_date_code(n, { date1904: isDate1904 });
+  // return `${parsed.y}-${parsed.m}-${parsed.d}`;
+  return new Date(parsed.y, parsed.m - 1, parsed.d, parsed.H, parsed.M, parsed.S);
+}
+
 export {
-  getPasswd,
-  changePasswdConfig,
-  dateFtt,
+  dateFmt,
   currentlyMonthDays,
   previousMonthDays,
+  isValidKey,
+  parseExcelDate,
 };
