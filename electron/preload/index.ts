@@ -96,7 +96,7 @@ const { ipcRenderer } = require('electron')
 
 import db from '../utils/rdb'
 
-window.electronAPI = {
+(window as any).electronAPI = {
   db: db,
   newDb: (callback: any) => ipcRenderer.on('newdb', callback),
   newDbSend: (config: any) => {

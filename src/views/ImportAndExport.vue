@@ -64,11 +64,11 @@ const openFile = () => {
                     [tableTitle[4]]: element[4],
                     [tableTitle[5]]: element[5],
                     [tableTitle[6]]: dateFmt("yyyy-MM-dd hh:mm:ss", parseExcelDate(element[6], false)),
-                    "flow": flows[element[1]],
-                    "category": specificCategoryId[element[0]],
-                    "account": accountNameAndId[element[3]]
+                    "flow": flows[element[1] as keyof typeof flows] ,
+                    "category": specificCategoryId[element[0] as keyof typeof specificCategoryId],
+                    "account": accountNameAndId[element[3] as keyof typeof accountNameAndId]
                 })
-                sqlParams.push([specificCategoryId[element[0]], flows[element[1]], element[2], accountNameAndId[element[3]], accountNameAndId[element[4]], element[5], dateFmt("yyyy-MM-dd hh:mm:ss", parseExcelDate(element[6], false))])
+                sqlParams.push([specificCategoryId[element[0] as keyof typeof specificCategoryId], flows[element[1] as keyof typeof flows], element[2], accountNameAndId[element[3] as keyof typeof accountNameAndId], accountNameAndId[element[4] as keyof typeof accountNameAndId], element[5], dateFmt("yyyy-MM-dd hh:mm:ss", parseExcelDate(element[6], false))])
             });
         }
     })

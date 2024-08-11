@@ -7,7 +7,7 @@ import pkg from '../../package.json'
 // vite下import.meta.env.DEV为开发环境变量
 const configFile: string = path.join(
   app.getPath("userData"),
-  process.env.NODE_ENV === "development" || import.meta.env.DEV ? "devConfig.json" : "config.json"
+  process.env.NODE_ENV === "development" || (import.meta as any).env.DEV ? "devConfig.json" : "config.json"
 );
 
 let appConfig:any = {

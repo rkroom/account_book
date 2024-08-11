@@ -1,11 +1,12 @@
-import { app, BrowserWindow, shell, ipcMain, dialog, Menu } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, dialog, Menu } from 'electron';
 import { release } from 'os'
 import { join } from 'path'
 import { configFile } from '../utils/config'
 import { changeConfig, changePasswdConfig, getPasswd } from '../utils/common'
 import initializeDb from '../utils/db'
 
-if (process.env.NODE_ENV === "development" || import.meta.env.DEV) {
+
+if (process.env.NODE_ENV === "development" || (import.meta as any).env.DEV) {
   console.log("check config file")
   console.log(configFile)
 }
