@@ -2,6 +2,18 @@
   <el-tabs v-model="activeName">
     <!--支出-->
     <el-tab-pane label="支出" name="pay">
+      <el-row v-if="quickButtons.length > 0" :gutter="20" style="margin-left: 10px;margin-bottom: 10px;">
+        <el-button v-for="(button, index) in quickButtons" :key="index" :type="button.type" round
+          @click="selectQuickButton(index)">
+          {{ button.category }}
+        </el-button>
+      </el-row>
+      <el-row v-if="quickAccountButtons.length > 0" :gutter="20" style="margin-left: 10px;margin-bottom: 10px;">
+        <el-button v-for="(button, index) in quickAccountButtons" :key="index" :type="button.type" round
+          @click="selectQuickAccountButton(index, button)">
+          {{ button.name }}
+        </el-button>
+      </el-row>
       <el-form ref="detailform" :model="detailform" :inline="true" class="demo-form-inline" :rules="rules">
         <el-form-item label="分类" prop="category">
           <el-cascader :show-all-levels="false" :options="options" :clearable="true" :props="defaultParams"
@@ -9,7 +21,7 @@
           </el-cascader>
         </el-form-item>
         <el-form-item label="账户" prop="account">
-          <el-select v-model="detailform.account" placeholder="请选择">
+          <el-select v-model="detailform.account" placeholder="请选择" @change="handlePayAccountChange">
             <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
@@ -97,7 +109,7 @@
 
 
 <script>
-import { getCategory, getselectoptions_s, getAccountType_s, getselects, addBill, addTransfer, getLastBill } from '../tools/dbTools';
+import { getCategory, getselectoptions_s, getAccountType_s, getselects, addBill, addTransfer, getLastBill, getMostFrequentType, getMostFrequentAccount } from '../tools/dbTools';
 
 export default {
   name: "PayForm",
@@ -106,6 +118,8 @@ export default {
       Number(value) ? callback() : callback(new Error("请输入数字"));
     };
     return {
+      quickButtons: [],
+      quickAccountButtons: [],
       defaultParams: {
         expandTrigger: "hover",
         label: "name",
@@ -163,13 +177,66 @@ export default {
     };
   },
   methods: {
+    selectQuickButton(clickedIndex) {
+
+      this.detailform.category = [this.quickButtons[clickedIndex]['pid'], this.quickButtons[clickedIndex]['id']];
+      this.detailform.specificcategory = this.quickButtons[clickedIndex]['id']
+
+      this.quickButtons = this.quickButtons.map((button, index) => {
+        if (index === clickedIndex) {
+          return { ...button, type: 'primary' };
+        } else {
+          return { ...button, type: '' };
+        }
+      })
+    },
+    selectQuickAccountButton(clickedIndex, clickedButton) {
+      this.detailform.account = clickedButton.id
+      this.quickAccountButtons = this.quickAccountButtons.map((button, index) => {
+        if (index === clickedIndex) {
+          return { ...button, type: 'primary' };
+        } else {
+          return { ...button, type: '' };
+        }
+      })
+    },
+    handlePayAccountChange(value) {
+      const buttonIndex = this.quickAccountButtons.findIndex(button => button.id === value)
+      if (buttonIndex !== -1) {
+        this.quickAccountButtons = this.quickAccountButtons.map((button, index) => {
+          if (index === buttonIndex) {
+            return { ...button, type: 'primary' };
+          } else {
+            return { ...button, type: '' };
+          }
+        })
+      } else {
+        this.quickAccountButtons = this.quickAccountButtons.map((button, index) => {
+          return { ...button, type: '' };
+        })
+      }
+    },
     handleChange(value) {
       this.detailform.specificcategory = value[1];
+      const buttonIndex = this.quickButtons.findIndex(button => button.id === value[1])
+      if (buttonIndex !== -1) {
+        this.quickButtons = this.quickButtons.map((button, index) => {
+          if (index === buttonIndex) {
+            return { ...button, type: 'primary' };
+          } else {
+            return { ...button, type: '' };
+          }
+        })
+      } else {
+        this.quickButtons = this.quickButtons.map((button, index) => {
+          return { ...button, type: '' };
+        })
+      }
     },
     // 将添加的数据传递到账单显示组件
     sendRowdata() {
 
-      getLastBill().then(r=>{this.$bus.emit("appendTable",r )});
+      getLastBill().then(r => { this.$bus.emit("appendTable", r) });
 
     },
     submitForm(detailform) {
@@ -244,12 +311,29 @@ export default {
       this.getselect("income").then((value) => {
         this.incomeOptions = value;
       });
-      this.getselectoptions().then(r=>{this.selectoptions = r})
+      this.getselectoptions().then(r => { this.selectoptions = r })
       this.accountType = this.getAccountType();
     },
   },
   mounted: function () {
     this.getdata();
+    //初始化快速选择按钮
+    getMostFrequentType("consume").then((v) => {
+      if (v.length > 0) {
+        this.quickButtons = v.map(button => ({
+          ...button,
+          type: ''
+        }))
+      }
+    });
+    getMostFrequentAccount("consume").then((v) => {
+      if (v.length > 0) {
+        this.quickAccountButtons = v.map(button => ({
+          ...button,
+          type: ''
+        }))
+      }
+    })
   },
 };
 </script>

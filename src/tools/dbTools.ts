@@ -35,7 +35,7 @@ db.asyncEach = function (sql: string, params: Array<string>, action: any) {
           }
         }
       });
-      db.get("", function (err: Error, row: any) {
+      db.get("", function (_err: Error, _row: any) {
         resolve(true);
       });
     });
@@ -61,6 +61,7 @@ function getCategory(parent_category_id: Number | string): any {
     [parent_category_id])
 
 }
+
 async function getselectoptions_s() {
   let selectoptions: any = [];
   await db.asyncEach(`select * from books_account_info`, [], (row: any) => {
@@ -151,7 +152,7 @@ function gettotalpages(categoryNull: any, categoryParam: any, accountParam: any,
 }
 
 async function gettabledata_s(categoryNull: any, accountParam: any, categoryParam: any, selectedStartTime: any, selectedEndTime: any, flowParam: any, pageSize: any, page: any) {
-  if (accountParam === "%"){
+  if (accountParam === "%") {
     return await db.asyncAll(
       `select i.name as account,b.account_info_id as account_id, case when b.flow = 'consume' then '支出' when b.flow = 'income' then '收入' 
       when b.flow = 'transfer' then '转账' end as flow,i2.name as aim_account,b.aim_account_id,s.specific_category as category,b.comment,
@@ -561,6 +562,51 @@ async function importBillsFromExcel(sqlParams: Array<Array<string>>) {
   return true
 }
 
+function getMostFrequentType(flow: string, interval: number = -30, limit: number = 7) {
+  return db.asyncAll(
+    `WITH MaxDate as(
+      SELECT max(when_time) as max_wt
+       FROM books_account_book
+       WHERE flow = ?
+     ),
+       TopValues as (
+       SELECT types_id
+       FROM books_account_book
+       WHERE flow = ?
+       AND when_time >= (SELECT date(max_wt, ?) FROM MaxDate)
+       GROUP BY types_id
+       ORDER BY COUNT(*) DESC
+       LIMIT ?)
+  SELECT s.specific_category category,s.id,s.parent_category_id pid
+  from books_account_category_specific s
+  JOIN TopValues t on s.id = t.types_id`, [flow, flow, `${interval} days`, limit])
+}
+
+function getMostFrequentAccount(flow: string, interval: number = -30, limit: number = 7) {
+  return db.asyncAll(
+    `WITH MaxDate as(
+    SELECT max(when_time) as max_wt
+     FROM books_account_book
+     WHERE flow = ?
+	 ),
+     TopValues as (
+     SELECT account_info_id
+     FROM books_account_book
+     WHERE flow = ?
+     AND when_time >= (SELECT date(max_wt, ?) FROM MaxDate)
+     GROUP BY account_info_id
+     ORDER BY COUNT(*) DESC
+     LIMIT ?)
+SELECT a.name,a.id
+from books_account_info a
+JOIN TopValues t on a.id = t.account_info_id`, [
+    flow,
+    flow,
+    `${interval} days`,
+    limit]
+  )
+}
+
 export {
   getCategory,
   getselectoptions_s,
@@ -613,4 +659,6 @@ export {
   getHandleInfo_schedule,
   changeDbPassword,
   importBillsFromExcel,
+  getMostFrequentType,
+  getMostFrequentAccount
 }
