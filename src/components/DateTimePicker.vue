@@ -1,11 +1,5 @@
 <template>
-  <el-popover
-    ref="dateTimeVisible"
-    @show="selectTime"
-    placement="right"
-    width="400"
-    trigger="click"
-  >
+  <el-popover ref="dateTimeVisible" @show="selectTime" placement="right" width="400" trigger="click">
     <template #reference>
       <el-button link icon="ArrowDownBold"></el-button>
     </template>
@@ -22,6 +16,7 @@
       @blur="closePop"
       ref="datePicker"
       value-format="YYYY-MM-DD HH:mm:ss"
+      :teleported="false"
     ></el-date-picker>
   </el-popover>
 </template>
@@ -90,6 +85,7 @@ export default {
   methods: {
     selectTime() {
       this.$refs.datePicker.pickerVisible = true;
+      this.$refs.datePicker.handleOpen();
     },
     dateTime(value) {
       if (value) {
@@ -97,9 +93,8 @@ export default {
       } else {
         this.$emit("update:modelValue", ["0000-00-00", "now"]);
       }
-    },
-    closePop() {
-      this.$refs.dateTimeVisible.autoClose;
+      //修改值后立即隐藏日期选择器
+      this.$refs.dateTimeVisible.hide();
     },
   },
 };

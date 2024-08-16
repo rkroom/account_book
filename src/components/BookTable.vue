@@ -16,7 +16,7 @@
               <el-button link  icon="ArrowDownBold" @click="categoryVisible = !categoryVisible"></el-button>
             </template>
             <el-cascader ref="categoriesCascader" :options="categoriesOptions" :props="categoryDefaultParams"
-              v-model="categoryId" :show-all-levels="false"></el-cascader>
+              v-model="categoryId" :show-all-levels="false" :teleported=false></el-cascader>
             <div class="el-table-filter__bottom">
               <button @click="cleanCategory">清空</button>
               <button @click="handleCategoryChange">确定</button>
@@ -32,7 +32,7 @@
               <el-button link  icon="ArrowDownBold" @click="flowVisible = !flowVisible"></el-button>
             </template>
             <el-cascader ref="flowCascader" :options="flowOptions" :props="defaultParams" v-model="selectFlow"
-              :show-all-levels="false"></el-cascader>
+              :show-all-levels="false" :teleported=false></el-cascader>
             <div class="el-table-filter__bottom">
               <button @click="cleanFlow">清空</button>
               <button @click="handleFlowChange">确定</button>
@@ -49,7 +49,7 @@
               <el-button link  icon="ArrowDownBold" @click="accountVisible = !accountVisible"></el-button>
             </template>
             <el-cascader ref="accountCascader" :options="accountOptions" :props="defaultParams" v-model="selectAccount"
-              :show-all-levels="false"></el-cascader>
+              :show-all-levels="false" :teleported=false></el-cascader>
             <div class="el-table-filter__bottom">
               <button @click="cleanAccount">清空</button>
               <button @click="handleAccountChange">确定</button>

@@ -37,7 +37,7 @@
           <el-input v-model="firstCategoryForm.firstLevel" placeholder="请输入分类名称"></el-input>
         </el-form-item>
         <el-form-item label="分类类型" prop="flow">
-          <el-select v-model="firstCategoryForm.flow" placeholder="请选择" default-first-option>
+          <el-select v-model="firstCategoryForm.flow" placeholder="请选择" default-first-option style="width: 160px;">
             <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
@@ -55,7 +55,7 @@
           <el-input v-model="specificCategoryForm.specificLevel" placeholder="请输入分类名称"></el-input>
         </el-form-item>
         <el-form-item label="一级分类" prop="superiorLevel">
-          <el-select v-model="specificCategoryForm.superiorLevel" placeholder="请选择" default-first-option>
+          <el-select v-model="specificCategoryForm.superiorLevel" placeholder="请选择" default-first-option style="width: 160px;">
             <el-option v-for="item in superioroptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
