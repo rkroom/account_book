@@ -1,5 +1,5 @@
 <template>
-  <el-popover ref="dateTimeVisible" @show="selectTime" placement="right" width="400" trigger="click">
+  <el-popover ref="dateTimeVisible" @show="selectTime" placement="right" width="450" trigger="click">
     <template #reference>
       <el-button link icon="ArrowDownBold"></el-button>
     </template>
@@ -13,7 +13,6 @@
       end-placeholder="结束日期"
       :shortcuts="pickerOptions"
       @change="dateTime"
-      @blur="closePop"
       ref="datePicker"
       value-format="YYYY-MM-DD HH:mm:ss"
       :teleported="false"

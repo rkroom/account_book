@@ -84,7 +84,7 @@ const confirmExport = () => {
                 type: "warning",
             }
         ).then(() => {
-            importBillsFromExcel(sqlParams).then((r: any) => {
+            importBillsFromExcel(sqlParams).then(() => {
                 sqlParams = []
                 proxy.$notify({
                     type: "success",

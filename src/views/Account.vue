@@ -29,8 +29,8 @@
         <el-input v-model="accountForm.name" placeholder="请输入账户名称"></el-input>
       </el-form-item>
       <el-form-item label="账户类型" prop="type">
-        <el-select v-model="accountForm.type" placeholder="请选择" default-first-option>
-          <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value">
+        <el-select v-model="accountForm.type" placeholder="请选择" default-first-option style="width: 80px;">
+          <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value" >
           </el-option>
         </el-select>
       </el-form-item>
