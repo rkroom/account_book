@@ -2,9 +2,9 @@
   <el-row type="flex">
     <div ref="divbookPopover">
       <el-popover placement="bottom-start" trigger="manual" @after-enter="show" v-model:visible="popoverVisible"
-        width="750px">
+        width="830px">
         <template #reference><span></span></template>
-        <BookTable :category="bookTableCategory" :time="queryDate" :cellStyle="cellStyle" :style="{ width: '750px' }">
+        <BookTable :category="bookTableCategory" :time="queryDate" :cellStyle="cellStyle" :style="{ width: '800px' }">
         </BookTable>
       </el-popover>
     </div>
