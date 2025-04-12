@@ -1,5 +1,3 @@
-import SSF from 'ssf'
-
 function dateFmt(fmt: string, date: Date): string {
   const o: any = {
     "M+": date.getMonth() + 1,
@@ -65,16 +63,11 @@ function isValidKey(key: string | number | symbol, object: object): key is keyof
   return key in object
 }
 
-function parseExcelDate(n: number, isDate1904: boolean) {
-  const parsed = SSF.parse_date_code(n, { date1904: isDate1904 });
-  // return `${parsed.y}-${parsed.m}-${parsed.d}`;
-  return new Date(parsed.y, parsed.m - 1, parsed.d, parsed.H, parsed.M, parsed.S);
-}
+
 
 export {
   dateFmt,
   currentlyMonthDays,
   previousMonthDays,
-  isValidKey,
-  parseExcelDate,
+  isValidKey
 };

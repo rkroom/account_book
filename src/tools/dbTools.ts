@@ -209,7 +209,7 @@ function getCategoryName_s() {
   return categoryName;
 }
 
-async function getAccountOptions_s() {
+async function getAccountIDName(): Promise<AccountIDNanme> {
   return await db.asyncAll(`select id,name from books_account_info`, []);
 }
 
@@ -548,7 +548,7 @@ function changeDbPassword(value: string) {
 }
 
 
-async function importBillsFromExcel(sqlParams: Array<Array<string>>) {
+async function importBillsFromExcel(sqlParams: Array<ExcelBillTuple>) {
   await db.asyncRun(`BEGIN TRANSACTION`);
   for (let param of sqlParams) {
     try {
@@ -607,6 +607,19 @@ JOIN TopValues t on a.id = t.account_info_id`, [
   )
 }
 
+async function getFirstLevel(): Promise<CategoryFlow> {
+  // 获取一级分类
+  return db.asyncAll(`SELECT first_level,flow_sign FROM books_account_category_first`, [])
+}
+
+async function getCategoryInfo(): Promise<CategoryInfo> {
+  return db.asyncAll(`
+      SELECT f.first_level, s.specific_category, s.id
+      FROM books_account_category_first AS f
+      JOIN books_account_category_specific AS s
+      ON s.parent_category_id = f.id;`, [])
+}
+
 export {
   getCategory,
   getselectoptions_s,
@@ -619,7 +632,7 @@ export {
   gettotalpages,
   gettabledata_s,
   getCategoryName_s,
-  getAccountOptions_s,
+  getAccountIDName,
   getSelect_s,
   getLastBill,
   UpdateAmount,
@@ -660,5 +673,7 @@ export {
   changeDbPassword,
   importBillsFromExcel,
   getMostFrequentType,
-  getMostFrequentAccount
+  getMostFrequentAccount,
+  getFirstLevel,
+  getCategoryInfo
 }

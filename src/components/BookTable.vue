@@ -13,7 +13,7 @@
           分类
           <el-popover ref="categoryPopover" placement="right" trigger="manual" v-model:visible="categoryVisible">
             <template #reference>
-              <el-button link  icon="ArrowDownBold" @click="categoryVisible = !categoryVisible"></el-button>
+              <el-button link icon="ArrowDownBold" @click="categoryVisible = !categoryVisible"></el-button>
             </template>
             <el-cascader ref="categoriesCascader" :options="categoriesOptions" :props="categoryDefaultParams"
               v-model="categoryId" :show-all-levels="false" :teleported=false></el-cascader>
@@ -29,7 +29,7 @@
           收支
           <el-popover ref="flowPopover" placement="right" trigger="manual" v-model:visible="flowVisible">
             <template #reference>
-              <el-button link  icon="ArrowDownBold" @click="flowVisible = !flowVisible"></el-button>
+              <el-button link icon="ArrowDownBold" @click="flowVisible = !flowVisible"></el-button>
             </template>
             <el-cascader ref="flowCascader" :options="flowOptions" :props="defaultParams" v-model="selectFlow"
               :show-all-levels="false" :teleported=false></el-cascader>
@@ -46,7 +46,7 @@
           账户
           <el-popover ref="accountPopover" placement="right" trigger="manual" v-model:visible="accountVisible">
             <template #reference>
-              <el-button link  icon="ArrowDownBold" @click="accountVisible = !accountVisible"></el-button>
+              <el-button link icon="ArrowDownBold" @click="accountVisible = !accountVisible"></el-button>
             </template>
             <el-cascader ref="accountCascader" :options="accountOptions" :props="defaultParams" v-model="selectAccount"
               :show-all-levels="false" :teleported=false></el-cascader>
@@ -62,17 +62,12 @@
       <el-table-column prop="comment" label="备注" :show-overflow-tooltip="true" width="100"></el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button link  @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button link @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-        <el-pagination
-      background
-      layout="prev, pager, next"
-      :total="totalPage"
-      :page-size="pageSize"
-      @current-change="handlePage"
-    />
+    <el-pagination background layout="prev, pager, next" :total="totalPage" :page-size="pageSize"
+      @current-change="handlePage" />
   </div>
 </template>
 <script>
@@ -85,7 +80,7 @@ import {
   gettabledata_s,
   getAccountType_s,
   getCategoryName_s,
-  getAccountOptions_s,
+  getAccountIDName,
   getSelect_s,
 } from '../tools/dbTools'
 
@@ -224,7 +219,7 @@ export default {
         this.selectedTime[0],
         this.selectedTime[1],
         this.flowParam[0],
-      ).then(r=>{this.totalPage = r.count})
+      ).then(r => { this.totalPage = r.count })
     },
     // 获取数据
     async gettabledata(pageSize, page) {
@@ -300,7 +295,7 @@ export default {
     },
     //获取账户
     getAccountOptions: async function () {
-      return await getAccountOptions_s();
+      return await getAccountIDName();
     },
     // 初始化数据
     async getdata() {

@@ -4,7 +4,7 @@ import { join } from 'path'
 import { configFile } from '../utils/config'
 import { changeConfig, changePasswdConfig, getPasswd } from '../utils/common'
 import initializeDb from '../utils/db'
-
+import * as fsExtra from 'fs-extra';
 
 if (process.env.NODE_ENV === "development" || (import.meta as any).env.DEV) {
   console.log("check config file")
@@ -191,6 +191,7 @@ async function createWindow() {
 ipcMain.handle('getPasswd', IpcPasswd)
 ipcMain.handle('newdb', mainNewDb)
 ipcMain.handle('getFileName', openFile)
+ipcMain.handle('save-file', saveFile);
 
 app.whenReady().then(() => {
 
@@ -247,6 +248,22 @@ async function mainNewDb(event: any, message: any) {
 
 async function IpcPasswd() {
   return getPasswd()
+}
+
+async function saveFile(event, { buffer, filename }: { buffer: Buffer, filename: string }) {
+    // 打开保存对话框
+    const { filePath } = await dialog.showSaveDialog({
+      title: '保存文件',
+      defaultPath: filename,
+    });
+    
+    if (filePath) {
+      // 使用 fs-extra 写入文件，writeFile 返回 Promise
+      await fsExtra.writeFile(filePath, buffer);
+      return true;
+    } else {
+      throw new Error('用户取消保存');
+    }
 }
 
 ipcMain.on('quitApp', (_event, _message) => {

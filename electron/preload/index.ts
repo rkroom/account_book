@@ -95,6 +95,7 @@ setTimeout(removeLoading, 4999)
 const { ipcRenderer } = require('electron')
 
 import db from '../utils/rdb'
+import fse from "fs-extra";
 
 (window as any).electronAPI = {
   db: db,
@@ -110,5 +111,12 @@ import db from '../utils/rdb'
   quitApp: () => ipcRenderer.send('quitApp', null),
   changeDb: (callback: any) => ipcRenderer.on('changeDb', callback),
   reloadWin: () => ipcRenderer.send('reloadWin', null),
-  openFile: () => ipcRenderer.invoke("getFileName")
+  openFile: () => ipcRenderer.invoke("getFileName"),
+  readFileBuffer: async (filePath: string) => {
+    const data = await fse.readFile(filePath);
+    return data.buffer;
+  },
+  saveFile: (buffer: Buffer, filename: string): Promise<boolean> => {
+    return ipcRenderer.invoke('save-file', { buffer, filename });
+  },
 }
