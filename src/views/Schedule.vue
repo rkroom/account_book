@@ -78,7 +78,7 @@
             <el-table-column label="状态" width="100">
                 <template v-slot="scope">
                     <el-button link type="primary" @click.stop="handleStatus(scope.$index, scope.row)">{{
-                            status[scope.row.status]
+                        status[scope.row.status]
                     }}
                     </el-button>
                 </template>
@@ -293,10 +293,8 @@ export default {
                         case "custom":
                             addCustomSchedule(
                                 this.schedule.createDate,
-                                "schedule",
                                 this.schedule.project,
                                 this.schedule.expectDate,
-                                "continuing",
                                 this.schedule.round,
                                 this.schedule.customDays,
                             );
